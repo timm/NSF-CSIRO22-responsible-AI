@@ -1,0 +1,223 @@
+# 1
+## Title:
+xia2022predicting : Predicting health indicators for open source projects (using hyperparameter optimization)   
+## notes:
+different programmer has different behavior that affects an open-source project. This paper predicts the developing behaviors on the project level. 
+## keywords:
+estimation algorithm, hyperparameter optimization, 
+## contributions:
+1. the project health issues explored here are related to real-world developer concerns for real projects
+2. project health indicators can be predicted into the future.
+3. viability of hyperparameter optimization across a very large number of projects.
+4. novel perspective on the process of hyperparameter optimization and automatic tuning of learners for software analytics. The process will repeat several times.
+5. the tuning of tiny regression trees on very small data sets is a specialized domain with its own properties.
+
+
+
+
+# 2
+## Title:
+tu2022debtfree : DebtFree: minimizing labeling cost in self-admitted technical debt identification using semi-supervised learning
+## notes:
+active learning method: Falcon
+
+## keywords:
+semi-supervised learning, minimize labeling cost, active learning
+active learning, 
+## contributions:
+1. This work is the first to assess the usage of unsupervised learning to reduce the cost of labels labeling in identifying SATDs (Self-Admitted Technical Debts).
+2. In the circumstance of training data with no label, the methods in the paper can reduce 99% of the number of examples that have to be labeled.
+3. For the labeled data, the paper proposes an improvement to the two-stop Jitterbug technique using an unsupervised learner to help reduce the commissioning effort of labeling new data.
+4. Falcon is an active learning scheme proposed in the paper that outperforms both deep learning method \cite{ren2019neural} and two-step method \cite{yu2020identifying} in low-resource and high-resource settings.
+5. DebtFree framework suggests that many more domains in software analystics could benefit from unsupervised learning including defect prediction
+
+
+
+# 3
+## Title:
+shu2022reducing : Reducing the Cost of Training Security Classifier (via Optimized Semi-Supervised Learning)
+## notes: 
+
+## keywords:
+semi-supervised learning,  hyperparameter optimization
+## contributions:
+1. Dapper optimizes semi-supervised learning algorithms to assign pseudo-labels to unlabeled data in a propagation paradigm
+2. Dapper proposes a machine learning classifier when the dataset class is highly imbalanced, Dapper then adaptively integrates and optimizes a data oversampling method called SMOTE.
+3. Dapper use the novel Bayesian Optimization to search a large hyperparameter space of these tuning targets.
+4. Hyperparameter optimization with semi-supervised learning can deal with shortages of labeled security data.
+
+#  4
+## Title:
+majumder2022revisiting : Revisiting process versus product metrics: a large scale analysis
+## notes: 
+related?
+## keywords:
+HPO, SVM, Random forest, Logistic regression
+## contributions:
+1. 
+
+
+#  5
+## Title:
+yedida2022improve : How to Improve Deep Learning for Software Analytics (a case study with code smell detection)
+## notes: 
+
+## keywords:
+code smell detection, deep learning, autoencoders， Hyperparameter optimization
+## contributions:
+1. Oversampling is effective and necessary prior to applying deep learning for code smell detection.
+2. GHOST, a tool for defect prediction, can be used for evaluating it on a new domain: code smell detection.
+
+#  6
+## Title:
+shu2022dazzle : Dazzle: Using Optimized Generative Adversarial Networks to Address Security Data Class Imbalance Issue
+## notes: 
+ML techniques are used for software vulnerability prediction. This paper deals with data class imbalanced issues.
+## keywords:
+HPO, Bayesian Optimization, 
+## contributions:
+Dazzle is an optimized version of conditional Wasserstein Generative Adversarial Networks with gradient penalty.
+Dazzle to generate minority class samples to resample the original imbalanced training dataset.
+Compared with SMOTE, about 60% improvement rate over.
+
+
+
+
+
+
+
+#  7
+## Title:
+shu2022omni : Omni: automated ensemble with unexpected models against adversarial evasion attack
+## notes: 
+
+## keywords:
+ML-based security detection models, adversarial attacks
+## contributions:
+Help security practitioners and researchers build a more robust model against non-adaptive, white-box, and non-targeted adversarial evasion attacks through the idea of an ensemble model.
+
+Omni, an approach, explores methods that create an ensemble of “unexpected models”.
+
+
+
+
+
+#  8
+## Title:
+lustosa2021sneak : SNEAK: Faster Interactive Search-based SE
+## notes: 
+unlabel data?
+## keywords:
+Interactive Search-based Software Engineering, Optimization, Model Reasoning, Cognitive Load Reduction
+## contributions:
+SNEAK is a semi-supervised learner (SSL) that uses the structure of the data to label a very small number of points, then propagates those labels over its neighbors.
+
+
+
+
+
+#  9
+## Title:
+peng2021xfair : xFAIR: Better Fairness via Model-based Rebalancing of Protected Attributes
+## notes: 
+
+## keywords:
+discriminate, detect ML model bias, mitigate ML bias, explanation.
+## contributions:
+xFAIR is a model-based extrapolation method that is capable of detecting, mitigating bias ,and explaining the cause of the discrimination against specific social groups in machine learning software.
+
+
+
+#  
+## Title:
+
+## notes: 
+
+## keywords:
+
+## contributions:
+
+
+
+
+
+
+#  
+## Title:
+
+## notes: 
+
+## keywords:
+
+## contributions:
+
+
+
+
+#  
+## Title:
+
+## notes: 
+
+## keywords:
+
+## contributions:
+
+
+
+#  
+## Title:
+
+## notes: 
+
+## keywords:
+
+## contributions:
+
+
+
+#  
+## Title:
+
+## notes: 
+
+## keywords:
+
+## contributions:
+
+
+
+#  
+## Title:
+
+## notes: 
+
+## keywords:
+
+## contributions:
+
+
+
+#  
+## Title:
+
+## notes: 
+
+## keywords:
+
+## contributions:
+
+
+
+
+#  
+## Title:
+
+## notes: 
+
+## keywords:
+
+## contributions:
+
+
+

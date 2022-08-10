@@ -1,0 +1,1763 @@
+\documentclass[twoside]{NSF}
+
+%  \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{rotate}
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
+\usepackage{ textcomp }
+\usepackage[para,online,flushleft]{threeparttable}
+
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist 
+\usepackage{makecell}
+  \usepackage[T1]{fontenc} 
+    \usepackage{textcomp} 
+   % \usepackage{mathpazo} 
+   \usepackage{framed}
+      \usepackage{pifont}
+\usepackage{adjustbox}
+\usepackage{epstopdf}
+\epstopdfDeclareGraphicsRule{.gif}{png}{.png}{convert gif:#1 png:\OutputFile}
+\AppendGraphicsExtensions{.gif}
+\usepackage{rotating}
+\usepackage{framed}
+\usepackage{colortbl}
+\usepackage{wrapfig}
+\usepackage{floatflt}
+% \usepackage{draftwatermark}
+% \SetWatermarkText{Draft}
+% \SetWatermarkScale{1}
+% \SetWatermarkLightness{.91}
+
+\usepackage{pgfplots}
+  
+\definecolor{maroon}{cmyk}{0,0.87,0.68,0.32}
+\setlength{\parskip}{0.5mm}
+\usepackage{indentfirst}
+\setlength{\parindent}{0.75cm}
+
+\usepackage{tcolorbox}
+
+
+\newcommand{\quart}[4]{\begin{picture}(80,4)%1
+    {\color{black}\put(#3,2){\circle*{4}}\put(#1,2){\line(1,0){#2}}}\end{picture}}
+
+
+\usepackage{longtable}
+\usepackage{tcolorbox}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{comment}
+\usepackage{pifont}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\newenvironment{myitemize}
+{ \begin{itemize}[topsep=0pt,itemsep=0pt,leftmargin=*]
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}     }
+{ \end{itemize}                  } 
+
+
+%\fancyfoot{}
+\pagestyle{fancy}
+\fancyfoot{}
+
+\newenvironment{mysmallize}
+{ \begin{itemize}[topsep=3pt,itemsep=0pt,leftmargin=10]
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}     }
+{ \end{itemize}                  } 
+
+\usepackage{array}
+\usepackage{ragged2e}
+\newcolumntype{P}[1]{>{\RaggedRight\hspace{0pt}}p{#1}}
+
+
+
+\newenvironment{mynumns}
+{ \begin{enumerate}[topsep=0pt,itemsep=0pt,leftmargin=*]
+    \setlength{\itemsep}{0pt}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0pt}     }
+{ \end{enumerate}   }
+ 
+ \definecolor{ao(english)}{rgb}{0.0, 0.5, 0.0}
+    
+
+\newcommand{\be}{\begin{mynumns}}
+\newcommand{\ee}{\end{mynumns}}
+
+\newcommand{\bi}{\begin{myitemize}}
+\newcommand{\ei}{\end{myitemize}}
+
+
+\newcommand{\bii}{\begin{mysmallize}}
+\newcommand{\eii}{\end{mysmallize}}
+
+\newcommand{\tion}[1]{\S\ref{tion:#1}}
+
+\newcommand{\tbl}[1]{Table~\ref{tbl:#1}}
+\newcommand{\fig}[1]{Figure~\ref{fig:#1}}
+
+\newcommand{\eq}[1]{Equation~\ref{eq:#1}}
+
+\usepackage[T1]{fontenc} 
+\usepackage{textcomp} 
+\usepackage{mathpazo} 
+   
+
+\definecolor{grey}{gray}{0.9}
+\usepackage{xcolor}
+% \usepackage{hhline}
+% \hyphenation{}
+
+\newcommand{\jnote}[1]{{\color{blue}[JEFF: #1]}} 
+\newtheorem{criteria}{Success Criteria}
+
+\usepackage[tikz]{bclogo}
+ 
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+
+ 
+\def\firstcircle{(90:1.75cm) circle (2.5cm)}
+\def\secondcircle{(210:1.75cm) circle (2.5cm)}
+\def\thirdcircle{(330:1.75cm) circle (2.5cm)}
+
+\newenvironment{eval}[1]%
+{\noindent\begin{minipage}[c]{\linewidth}%
+\begin{bclogo}[couleur=gray!25,%
+                arrondi=0.1, % barre=zigzag,% 
+                logo=\bcattention,%
+                ombre=true]{~#1}  \begin{criteria}\small}%
+{\end{criteria}\end{bclogo}\end{minipage}\vspace{2mm}}
+
+\newcommand{\IT}{{\sffamily {\em \mbox{OMNI-2}}}}
+
+\newcommand{\ACT}[1]{{\sffamily {\bf TASK}$_{#1}$}}
+
+\newcommand{\TITLE}{NSF-CSIRO: 
+Can I Trust you, Tomorrow? Building a Predictive and Responsible Foundation for Robust Deep Learning
+}
+
+ \usepackage[labelfont=small,font=bf]{caption}
+ \captionsetup{font+=sf} 
+ 
+  \usepackage{pifont}
+
+\usepackage{listings}
+\usepackage{tcolorbox}
+\newtcolorbox{blockquote}{colback=gray!15,boxrule=0.4pt,colframe=gray!15,fonttitle=\bfseries,top=2pt,bottom=2pt}
+
+\usepackage{MnSymbol}% http://ctan.org/pkg/mnsymbol
+\usepackage{amsmath}% http://ctan.org/pkg/amsmath
+\usepackage{adjustbox}% http://ctan.org/pkg/adjustbox
+
+
+% \newcommand\hmmax{0}
+% \usepackage{bm}
+
+
+\newcommand*{\skepcon}{\ensuremath{\mathrel{\medvert\mskip-5.7mu\clipbox{1 0 0 0}{$\sim$}}}}
+
+
+
+\usepackage{bbm}
+
+\usepackage{changepage}
+\usepackage{framed}
+
+% pretty bars
+\newcommand{\sbar}[1]{{\color{darkgray}\rule{\dimexpr 0.6cm * #1 / 100}{5pt}\color{lightgray}\rule{\dimexpr 0.6cm * (100 - #1) / 100}{5pt}}}
+
+
+\makeatletter
+\renewenvironment{framed}{%
+ \def\FrameCommand##1{\hskip\@totalleftmargin
+ \fboxsep=\FrameSep\fbox{##1}
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed}
+\makeatother
+
+% environment derived from framed.sty: see leftbar environment definition
+%\definecolor{formalshade}{rgb}{0.93,0.93,0.93}
+
+\definecolor{formalshade}{HTML}{F9E3DF}
+\newcommand{\gray}{\cellcolor{lightgray}}
+
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
+
+
+\definecolor{darkblue}{rgb}{0.2, 0.2, 0.2}
+
+\newenvironment{formal}{%
+  \def\FrameCommand{%
+    \hspace{1pt}%
+    {\color{darkblue}\vrule width 2pt}%
+    {\color{formalshade}\vrule width 4pt}%
+    \colorbox{formalshade}%
+  }%
+  \MakeFramed{\advance\hsize-\width\FrameRestore}%
+  \noindent\hspace{-1pt}% disable indenting first paragraph
+  \begin{adjustwidth}{}{7pt}%
+  \vspace{1pt}%\vspace{2pt}%
+}
+{%
+  \vspace{3pt}\end{adjustwidth}\endMakeFramed%
+}
+
+
+\begin{document}
+\ProjectTitle{\TITLE}
+\ProjectAuthor{
+%Tim Menzies, NC State
+}
+
+%\input{1.summary}
+
+
+
+\begin{nsfdescription}
+
+\input{2.goals}
+
+%\input{3.topicRelevance}
+ 
+\input{4.motivationRelatedwork} 
+
+\input{5.approach}
+
+\input{6.0.plan}
+\input{6.1.task1}
+\input{6.2.task2}
+\input{6.3.task3}
+\input{6.4.task4}
+
+
+% \input{7.scheduleImpact}
+
+% \input{8.priorResults}
+
+
+\end{nsfdescription}
+
+\begin{nsfreferences}
+\section*{References}
+%kenrefs,proposal,ssl,suvodeep,verifyDNN,HPO,verifyApprs,
+      \bibliography{proposal}
+\end{nsfreferences} 
+
+\begin{nsffacilities}
+  
+
+% \section*{Facilities From other Institutions}
+% As stated in our {\em Collaboration Plan},
+% we have unpaid collaborators from Facebook,  Microsoft,
+% and IBM. Once this research develops viable
+% unfairness measurement and mitigation methods
+% for semi-supervised algorithms, these collaborators
+% will grant us access to materials, to be negotiated, at their
+% site. Apart from (potentially) being able to access
+% models  behind the firewalls of model stores, an important
+% facility these collaborators could offer is access to the subject matter
+% experts that can test if the veracity of our
+% artificially generated models.
+
+
+% \section*{Facilities at North Carolina State University}
+ 
+\subsection*{Offices:}
+The project PI has
+and offices in their   CS Department. This department
+has adequate space to house all research assistants
+working on this project. All offices are wired for high-speed network access.
+
+The PI's departments at  NC State provide the space and basic networking services to
+carry out the experiments, secretarial and administrative support as well as general-purpose office equipment ({\em e.g.}, fax, photocopiers, etc.).
+
+\subsection*{Lab Space}
+The PI has their own lab space at NC State.
+PI  Menzies' RAISE lab (Real-World 
+AI and SE) is a newly renovated space containing over 1,500 ft\textsuperscript{2} of research space and 
+15 cubicles, a meeting space, printer, and wide screen projector. 
+
+\subsection*{Compute Facilities}
+Part of {\IT} will involve comparatively assessing different technologies. For that process, it will be useful to have some large-scale compute facility.
+ 
+At NCSU, students working on this grant will have access to a 108-node compute cluster named ARC with 2,000 cores (AMD Mangy-Cours), Infiniband QDR interconnect, per node power monitoring, GPUs and SSDs and parallel file system support,
+which was funded by an NSF CRI that he is the main PI of together with 5 co-PIs.  
+The ARC facility is providing local and remote researchers with administrator/root privileges for Computer Science experiments at a
+medium scale. This allows any of the software layers, including the operating system and Infiniband switch network routing tables, to be
+modified for experimental purposes, e.g., to experiment with different
+network topologies.  For large-scale demonstrations, other 
+facilities will be utilized (the HPC discussed below.
+
+
+Additionally, NC State University provides a High-Performance Computing (HPC) facility as a part of the initiative to provide state-of-the-art support for research and academic computing. HPC system (called henry2) provides NC State students and faculty with entry and medium-level high-performance research and education computing facilities, consulting support and scientific workflow support. The HPC ecosystem consists of 1233 dual Xeon compute nodes in the henry2 cluster. Each node has two Xeon processors (mix of dual-, quad-, six-, eight-, ten-core, twelve-core) and 2 to 6 GigaBytes of memory per core. The total number of cores increases as more cores are purchased and now exceeds 10000. The nodes all have 64-bit processors. All HPC projects have the capability to run jobs using up to 128 processor cores for up to 48 hours and smaller jobs up to a week.
+ 
+%  \section*{Unpaid Collaborators}
+ 
+%  This document contains letter s of 
+%  collaboration from:
+  
+% \be
+% \item Tim Menzies,
+% North Carolina State University; PI
+% \item
+%   Anirban Mandal, RENCI, UNC-Chapel Hill; unpaid collaborator (see attached letter).
+  
+%   \item
+%   Wolfgang  Bangerth, Colorado State University, unpaid collaborator (see attached letter).
+% \ee
+% These researchers were active in our prior CSSI work and offered much useful feedback on our direction
+% (as well as case study material).
+% We full anticipate that these collaborations will continue.
+
+\end{nsffacilities}
+
+ 
+\DataManagementPlan{data}
+%XXX human data
+\newpage
+\pagestyle{empty}
+ 
+\section*{Project Personnel}
+ 
+\be
+\item Tim Menzies,
+North Carolina State University; PI 
+\ee
+
+
+\end{document}
+
+
+\subsection{Limits to \mbox{OMNI-1}}
+As stated in our introduction,
+while OMNI-1 was a promising prototype, these
+results have numerous limitations that must be addressed.
+
+That said, as stated in the introduction, 
+ the \mbox{OMNI-1} study  has certain limitations. 
+ For example,
+ Figure~\ref{tbl:contagioAccuracy}
+ shows results with the \mbox{OMNI-1} and the
+ Contagio PDF data set (and the patterns
+ shown here repeat across all the other data
+ sets of Table~\ref{data}). 
+
+much a  baseline treatment
+ reports how well an untuned deep learner can classify known prior attacks as "benign" or "malicious". 
+ 
+
+To improve om \mbox{OMNI-1}, \mbox{OMNI-2} will explore the following design options:
+\bi
+\item
+The Gower distance allows to assign a weight $w_{ijk}$ to each individual variable base on the importance of that variable in the distance calculation.   \mbox{OMNI-1} used $w_{ijk}=1$, which is
+ something that \mbox{OMNI-2} hopes to improve on.  
+ \item \mbox{OMNI-1} built its initial pool of configurations using a standard hyperparameter optimization (Hyperopt/TPE~\cite{bergstra2012random}),
+ which we think we can improve upon (see \tion{XXX}).
+\ei
+
+
+% \end{tabular}
+% \end{table}
+
+
+
+% \begin{table}[!h]
+% \centering
+% \footnotesize
+% \caption{An overview of the statistics of the security datasets studied in our work.}
+% \begin{tabular}{l|r|c|c}
+% \hline
+% \rowcolor[HTML]{ECF4FF} 
+% \multicolumn{1}{c|}{\cellcolor[HTML]{ECF4FF}\textbf{Dataset}} & \multicolumn{1}{c|}{\cellcolor[HTML]{ECF4FF}\textbf{Original Size}} & \textbf{Sampling Rate(\%)} & \textbf{Feature Count} \\ \hline
+% NSL-KDD & 148,517 & 100 & 123 \\ 
+% CSE-CIC-IDS2018 & 16,233,003 & 5 & 70 \\ 
+% CIC-IDS-2017 & 2,830,743 & 20 & 70 \\ 
+% CICAndMal2017 & 2,618,533 & 20 & 71 \\ 
+% Contagio PDF Malware & 22,525 & 100 & 135 \\ \hline
+% \end{tabular}
+% \label{tbl:dataOverview}
+% \end{table}
+
+
+
+To assess {\bf Omni}, we use the five security datasets of Table~\ref{tbl:dataOverview}
+and Table~\ref{tbl:dataInPhase}.
+\textit{NSL-KDD}~\cite{nsl-kdd} dataset is an improved version of KDD'99 dataset~\cite{tavallaee2009detailed}, which recorded network traffic under different types of attacks. 
+\textit{CIC-IDS-2017}~\cite{sharafaldin2018toward}   is comprised of both normal traffic and simulated abnormal data caused by intentional attacks on a test network.
+\textit{CSE-CIC-IDS2018}~\cite{sharafaldin2018toward} is  an intrusion detection dataset that  includes seven different attack scenarios (Brute-force, Heartbleed, Botnet, DoS, DDoS, Web attacks, and infiltration of the network from inside). 
+\textit{CICAndMal2017}~\cite{lashkari2018toward} is an Android malware dataset that collects 426 malicious and 1,700 benign applications collected from 2015 to 2017. These malicious samples are split into four categories (Adware, Ransomware, Scareware, SMS Malware) and 42 families.  
+\textit{Contagio PDF Malware}~\cite{contagio-pdf} dataset has  labels
+on a set of benign and malicious PDF documents
+(i.e. those used as delivery vechiles for
+malicious content), including a relatively large number from targeted attacks.
+ 
+
+
+\begin{table}[!h]
+\centering
+\footnotesize
+\caption{The characteristics of security datasets during training and testing phase.}
+\begin{tabular}{l|r|r|r|r|r|r}
+\hline
+\rowcolor[HTML]{ECF4FF} 
+\multicolumn{1}{c|}{\cellcolor[HTML]{ECF4FF}} & \multicolumn{2}{c|}{\cellcolor[HTML]{ECF4FF}\textbf{Training Phase}} & \multicolumn{2}{c|}{\cellcolor[HTML]{ECF4FF}\textbf{Testing Phase}} & \multicolumn{2}{c}{\cellcolor[HTML]{ECF4FF}\textbf{Total}} \\ \cline{2-7} 
+\rowcolor[HTML]{ECF4FF} 
+\multicolumn{1}{c|}{\multirow{-2}{*}{\cellcolor[HTML]{ECF4FF}\textbf{Dataset}}} & \multicolumn{1}{c|}{\cellcolor[HTML]{ECF4FF}\textbf{Benign}} & \multicolumn{1}{c|}{\cellcolor[HTML]{ECF4FF}\textbf{Malicious}} & \multicolumn{1}{c|}{\cellcolor[HTML]{ECF4FF}\textbf{Benign}} & \multicolumn{1}{c|}{\cellcolor[HTML]{ECF4FF}\textbf{Malicious}} & \multicolumn{1}{c|}{\cellcolor[HTML]{ECF4FF}\textbf{Benign}} & \multicolumn{1}{c}{\cellcolor[HTML]{ECF4FF}\textbf{Malicious}} \\ \hline
+NSL-KDD & 67,343 & 58,530 & 12,833 & 9,711 & 80,176 & 68,341 \\ 
+CSE-CIC-IDS2018 & 535,701 & 102,379 & 133,926 & 25,595 & 669,627 & 127,974 \\ 
+CIC-IDS-2017 & 363,410 & 89,050 & 90,853 & 22,262 & 454,263 & 111,312 \\ 
+CICAndMal2017 & 193,777 & 224,873 & 48,445 & 56,218 & 242,222 & 281,091 \\ 
+Contagio PDF Malware & 8,821 & 9,199 & 2,205 & 2,300 & 11,026 & 11,499 \\ \hline
+\end{tabular}
+\label{tbl:dataInPhase}
+\end{table}
+
+
+\section{Other Notes}
+\subsection{Scope}
+Just to  clarify some remaining points of this
+study, this section discusses some of our scoping
+decisions. 
+
+ Firstly, we limit the scope of study that the attackers will try to evade a single model with crafted adversarial examples. Attacking multiple models with adversarial examples~\cite{kwon2018multi} is another interesting research direction which we would like to explore in future work.  
+
+Secondly, there is a growing interest in different types of privacy-related attacks (e.g., model extraction attack~\cite{papernot2017practical}) which make the leakage of model information possible~\cite{rigaki2020survey}. For example, Juuti et al.~\cite{juuti2019prada} consider the problem
+where a  business model
+is hosted in a secure cloud that allow user clients to query the models via cloud-based prediction APIs. These prediction APIs are suffered from being exploited with model extraction attacks. The target model can be used as an oracle for returning predictions for the samples that attackers submit. Such kind of attempts can further be iteratively executed for attackers to maximize the information extraction about model internals. In other proposals to the NSF, we have offered methods to mitigate model extraction attacks.
+ 
+
+
+
+
+
+In our method,
+we first run a hyperparamter optimizer XXX in the usual manner to find parameters resulting in the model with the highest accuracy. We call this model the {\em expected model} since  
+this is the model we would  expect the attackers to learn. 
+Note that, as a side effect of this process, we have a large {\em pool} of models; i.e. all the other models explored by the optimizer before arriving at the best one.
+
+
+  
+For this last point \#4 to be effective, we would need to explore a very large space of
+configurations.  Certain other   geometric features of 
+Figure~\ref{moo} suggest that this is possible.   A commonly observed feature of multi-objective optimizers is
+that:
+\begin{quote}
+{\em Randomly selected
+$x$ space configuration decisions  do not spread out evenly in objective $y$ space.}
+\end{quote}
+More specifically, the $y$ objectives form a {\em surface} within which the achievable
+objectives can be clustered into small regions. For example, the standard ROC-surface (receiver operator characteristics) curve of a data miner bows away from the middle of $y$ space towards (but not ever reaching) the ``utopia point''. 
+
+
+
+
+\begin{figure}[!t]
+\caption{Reports of a   learner's performance are only reliable within
+some epsilon $\epsilon$.  }\label{reach}
+\begin{center}
+\begin{tabular}{ m{2.5in} m{3.5in} } 
+\includegraphics[width=2.5in]{fig/roc.png}&
+{\small In this figure thick blue lines shows median performance seen in 10 machine learning
+experiments, where each experiment learns on 90\% of the data (selected at random).
+Note that  there is some variability seen in the thin blue lines, which are the
+results from each individual trial. Comparing the median line to the rest,
+we see that there is some variability of size $\epsilon$ in a learner's performance. }
+\end{tabular}
+\end{center}
+\end{figure}
+
+\section{Related Work}
+
+
+Researchers have proposed various solutions against adversarial machine learning attacks including
+  \textit{adversarial training}, \textit{gradient masking}, \textit{defensive distillation}, and \textit{ensemble learning}. The idea of \textit{adversarial training}~\cite{DBLP:conf/iclr/TramerKPGBM18,DBLP:conf/iclr/NaKM18,DBLP:conf/iclr/MadryMSTV18,DBLP:conf/iclr/FarniaZT19,DBLP:conf/nips/ShafahiNG0DSDTG19,yin2019adversarial} is to build a ``golden'' dataset that ideally contains a set of curated attacks and normal data that are representative of the target system. The data is then used when training the model. Intuitively, if the model sees adversarial examples during training, its performance during prediction will be improved for adversarial examples generated in the same way. However, the problem with adversarial training is that it suffers from an optimized attack or adaptive attack, since this method only defends the model against the same attacks used to craft the examples originally included during training. 
+
+\textit{Gradient masking}~\cite{papernot2018sok} is a technique that hides the model gradients to reduce model's sensitivity to adversarial examples. However, later work~\cite{DBLP:conf/icml/AthalyeC018} shows that even with gradient masking,
+because of the transferability property of adversarial examples, the attackers can still build a substitute model and transfer the attacks.
+
+\textit{Defensive distillation}~\cite{papernot2016distillation} tries to generate a new model whose gradients are much smaller than the original undefended model. If gradients are very small, some gradient-based attacks are no longer useful, as the attacker would need great distortions of the input data to achieve a sufficient change in the loss function. However, this method can be   ineffective~\cite{DBLP:journals/corr/CarliniW16} since, with a slight modification to a standard attack, attackers can still find adversarial examples on distilled networks.
+
+
+
+Thr
+
+
+Now consider tje
+OMNI scores different hypermater configura
+While exploring a large number of models (such as the trillions of options from \tbl{hyperparameters}), the ``expected model'' might be the one the scores
+best across all the $y$-objectives. ; i.e. the optimal model from hyperparameter optimization, which is used in normal prediction. This model is the target of attackers and hence then becomes the victim model. Next, our optimizer surveys the hyperparameter space of models to find ``unexpected models''; i.e. models that are (a)~performing well (i.e., sub-optimal models) and (b)~dissimilar to the expected model (i.e., in the architecture). More specifically:
+\bi
+\item 
+For hyperparameter optimization, we search a large space of possible configurations of a model to initialize a large \textit{model pool}.
+\item
+The {\em expected model} is a model from the model pool that performs best (under no attack). We call this model ``\textit{expected}'' since we conjecture that this model would be the target of an attacker, and becomes a victim model.
+\item
+We introduce an idea called \textit{model distance}, which is a numeric value indicating the degree of similarity of two models' hyperparameter configurations. A large model distance value means that two models are more likely to be different in their model architecture. 
+\item The {\em unexpected models} are those whose performance within some small $\epsilon$ of the expected model but are more than some distance $t$ away from the expected model.   
+\item
+Those unexpected models are combined into a \textit{weighted ensemble}, in which each model $m_i$ in the ensemble with a weight $w_i$. The final prediction of this ensemble is the combined prediction of each model $m_i$ times its weight $w_i$. These weights are further optimized by an evolutionary algorithm that finds optimal $w_i$ setting that maximizes prediction performance.
+\item
+The final weighted ensemble, with its optimized weight setting is then deployed against evasion attacks.
+\ei
+  
+
+Software security is often compared to the game ``whack-a-mole'' where players  wait for one or more  furry animals to poke their heads above ground, at which time you
+try to ``whack'' them over the head with a large padded hammer before they escape. 
+
+Vulnerability management is often compared to whac-a-mole, with new vulnerabilities appearing up constantly, and security teams realizing that they will eventually fall victim to an adversary. It is common to deprecate such an ad hoc whac-a-mole approach, arguing that security and adversarial defense requires a deep systems approach where the defenders institute long-term policies to (e.g.) deprecate the probability of vulnerabilities being added to a system in the first place.
+
+But what if there was another way to runt the Whac-a-mole game? In our  approach, we turn the tables on adversial attachers 
+by (a)~building a very large collection of different defnese algortms, then 
+(b)~jumping between them at random at runtime. In this ``reversed Whac-a-mole game'', it is now the attackers
+struggling to keep up with all the new tactic of the defenders.
+
+Recent advances in nyperparameter optimziation (HPO) suggest that shis rppach is eindeed viable. As discusses in the next section, such optimziers explore two spaces:
+(a)~the space of design decisions for a defnder and (b)~the space of design performance measures. In
+standard HPO
+
+
+
+
+
+of defense
+
+
+Here, we propose to reverse the rules of that game. Adversarial security
+learning is the process of an
+external adversary learning examples that confusing internal defending
+software
+into concluding that some incoming
+malicious data is actually benign.
+recent results show that even
+when the external attack does
+not know the internal details,
+they can still build a learner
+show that an attacker can run a  machine learner ex when
+the attackers do not know how
+the defender learns to distnushish benign from malcisous inuput, 
+
+
+A major contributing factor to this problem is that enterprise security teams are overwhelmed with tens of thousands of vulnerabilities across hundreds of thousands of assets that potentially need to be fixed. In an ideal world, you would whack all these moles systematically by “patching all” but this is impossible in most organizations. 
+
+
+
+
+The NSF has spent hundreds of millions of dollars
+on computational science software. When those projects fail and are ignored
+(or fall into disrepute), then all those monies amount to little more than hard drives
+gathering dust in some basement.  How can we find, and fix, faltering computational  science software (CSS)  projects
+{\em before} they fail?
+To answer this question, this proposal will   develop and certify and apply  the  {\IT} workbench (\underline{\bf M}easuring and mitigating  \underline{\bf U}nhealthy \underline{\bf S}cientific softwar\underline{\bf E}) to CSS software.
+{\IT} will be an open source tool with ``hooks'' into source code repository systems such as Github.  {\IT} will distill decades
+of work on software analytics into a form easily and rapidly usable by CSS projects. All the tools generated by this project will be placed on-line in a free-to-access Github repository and made available to the CSS community via an open source license.
+
+A unique feature of this proposal is its scope. The software produced here will be applicable to  {\em any} CSS project using an open source repository (and we know at least 700 such projects). In our concept of operation, 
+for any project  registered  with {\IT},
+whenever developers commit code, they automatically receive an issue report commenting on the current and future health of their software, along with advice on how to improve that future state.  
+
+That said, it is not enough to just advertise a service and expect others to use it. In this work,
+NC State researchers will apply {\IT}   to as many CSS projects as possible. With  preliminary results in hand, they will approach CSS projects offering commentaries on their software (derived via our data miners)  and free consulting   on how to improve   projects. By  enticing CSS project members with results from their own projects, we anticipate growing a large user base amongst the CSS community.
+
+\section{Goals}
+
+Parts of {\IT} have been researched an developed for non-CSS software~\cite{peng2021defect,xia2019sequential,xia2020predicting,tu2020changing,tu2021mining}.
+But before  we can assert that {\IT}  works on  CSS software, {\IT} needs to be
+extend and improved and tested on CSS.
+This proposal is a request for funding to perform the research and make the advances
+needed to  optimizing  CSS
+project corrective recommendations in order to:
+\bi
+\item {\em Minimize} the data collection required in order to make a recommendation;
+\item
+ {\em Minimize} the changes associated with {\IT}'s recommendations; 
+\item
+ {\em Maximize} the effect of {\IT}'s recommendations; 
+\item
+ {\em Maximize} the likelihood that CSS developers will actually apply those recommendations. 
+\ei
+% In order to avoid wasted development software effort
+% this project will  build predictors for the   success or
+% failure of a Computational Science Software (CSS) project. 
+% Some CSS projects are more successful that others?
+% Why? How early can we see if a project is going to be  more successful that others? If a project is flagging, how soon can we detect that? And
+% how can that problem be   repaired? 
+
+\begin{wrapfigure}{r}{3.2in}
+\includegraphics[width=3.2in]{fig/dealii.png}
+\caption{Healthy CSS projects are   active. E.g. see the
+numerous commits of new software to the deal.II    finite elements 
+library since 1998. From  {\bf github.com/dealii}.}\label{fig:dealii}
+\end{wrapfigure}
+% ~{\IT} is a feasible goal. Our prior CSSI-funded work\footnote{Elements: Can Empirical SE be Adapted to Computational Science?
+% Award \#1931425.  PI= Dr. Tim Menzies, NCState. 2019-2022.  }
+% has shown regularities in CSS software that,
+% in theory, make it amenable to  accurate prediction and repair.  
+% When some phenomenon is regular and predictable then it makes it a clear candidate
+% for control strategies. Hence this proposal. 
+Central to this proposal is the concept of ``project health''.
+Researchers agree that ``healthy'' software projects are   ``vigorous'' and ``active''~\cite{han2019characterization, wahyudin2007monitoring,jansen2014measuring,manikas2013reviewing,link2018assessing,wynn2007assessing,crowston2006assessing}. 
+For example,   the 
+deal.II  adaptive finite elements package  is very 
+``healthy''
+since,  at the time of this writing,
+it  has over 10,000 closed ``pull requests'' (where people
+outside the core team have successfully contributed fixes or enhancements).
+Another measure of the ``health'' of that deal.ii is that it receives
+thousands of commits (changes to its software) each year (see \fig{dealii}).
+
+
+
+
+For non-CSS   software,
+PI Menzies and his students 
+(Mr. Taianpei Xia~\cite{xia2019sequential,xia2020predicting} and Mr. Huy Tu~\cite{tu2020changing,tu2021mining})
+have used early prototypes of {\IT} to successful predicted project ``health''  twenty four months into the future. As discussed below, such information can be used to guide project improvement plans (e.g. improvement planning may be not be required, when a project is predicted to be healthy for the foreseeable future.
+
+That said, those predictions have only be performed on conventional software (i.e. not CSS software). 
+As discussed in
+\S\ref{prior},
+ CSS software  is very different to conventional software. E.g. the latter is subject to the whims of market forces while the former is subject to whims of  funding
+agencies. Also, CSS developers are specialists in physics, chemistry, etc and so may lack certain training and experience of SE methods. 
+ Accordingly, prior success for predicting health on conventional software needs to be checked for CSS software. Hence our first goal is:
+\begin{formal}\noindent
+{\bf Goal1}  predict project health for  some CSS projects (discussed in \S\ref{goal1}).
+\end{formal}
+\noindent
+Merely measuring a problem is insufficient. After 
+{\em measuring} must come {\em mitigation}. Once
+we can  recognize a failing project, the next
+step is to seek ways to fix it.
+PI Menzies (and his graduate
+student Mr. Kewen Peng~\cite{peng2021defect})
+have shown that   software can be adjusted to decrease its defects and increase its health. Since  this approach has  yet to tested on CSS software, our next goal must be: 
+\begin{formal}\noindent
+ {\bf Goal2}  plan effective improvements for some  CSS projects (discussed in \S\ref{goal2}).
+\end{formal}
+
+
+
+
+
+% \begin{wrapfigure}{r}{2.5in}
+% \includegraphics[width=2.5in]{fig/mainsequence.png}
+% \caption{ Astronomers use  Hertzsprung-Russell diagrams to determine where is a star within the overall life-cycle of all stars.   Can we do something similar with software systems?}\label{fig:hr}
+% \end{wrapfigure}
+% By measuring, then mitigating, problems  in CSS software, this project will  enable all the 
+% science that is discovered by that software.   Researchers into software
+% analytics claim that there exists  
+%   properties within all software projects that allows for the prediction
+% of the future state of those projects. Like atoms in a star, these
+% properties might be highly variable within any local context. 
+% Nevertheless, if we step back to see the bigger picture, a pattern can emerge; e.g. see 
+% Hertzsprung-Russell diagram of \fig{hr}. As with atoms, so too with software developers, If  we step back from the specifics of individual
+% components, we can make predictions about large systems of individual developers.
+%  But unlike stellar evolution,
+% using the methods of this paper, developers and funding agencies can not only  predict 
+% the current
+% expected fate of a software project,  they can also take steps to 
+% {\em change that fate}.
+
+% % This project is somewhat different to a standard CSSI project. 
+% % Instead of making predictions about physical phenomena,
+% % in this work, we step back from that as say our ``phenomena''
+% % being studied is the act of software development itself:
+
+% % \begin{center}
+% % {\em 
+% % This proposal will make predictions about the   
+% % process that  makes the software that enables computational science. 
+% % \end{center}
+
+
+
+% On the other hand,
+% some CSS projects are not healthy and are ignored by the community
+% (as witnessed by very little vigor or activity). To find, then fix,
+% such projects, we apply methods from open source software to CSS projects.
+% Those methods build models that offer
+% accurate predictions on open source software project health,3,6,12,24 months into the future
+% (where ``health'' is measured by values like number of closed pull requests and number of contributors).
+% Those      methods have only been tested on software 
+% that is ``market-driven''  (e.g. by   open source Silicon Valley industries) rather than ``science-driven''
+% (e.g. by NSF funding cycles). Hence, here, we must test them   on computational science projects:
+% \begin{formal}\noindent
+% {\bf Goal1} of this project is to see how widely these health prediction methods apply to CSS projects.\newline
+%  {\bf Goal2} of this project is to see if our predictors can be used to drive planners that propose
+% useful changes to projects (where ``useful'' means ``improve project health'').
+% \end{formal}
+\noindent
+Given the size of the CSS  community, our project improvement  goals
+are  only widely applicable
+if we can tame the data collection cost associated with this kind of analysis.  Outside of CSS
+software,
+{\em semi-supervised learning} has been used
+to  restrain data collection to just the most informative examples. For non-CSS projects this
+has meant  the effort associated with this kind of
+study can be reduced by a factor of 40~\cite{tu2021frugal}\footnote{A core problem with analytics is ``labelling''; i.e. acquiring the ground truth associated with each example. Semi-supervised methods take a small number of labels then intelligently ``spread them round'' their nearest neighbors. In this way, Tu et al.~\cite{tu2021frugal} was able to reduce the labelling effort of their case study to just 2.5\% of the examples.}. 
+But the value of that semi-supervised learning to
+to CSS projects
+has yet to be tested. Hence:
+\begin{formal}\noindent
+{\bf Goal3}: achieve Goal1,Goal2 for CSS projects via minimal data collection (discussed in \S\ref{goal3}).
+\end{formal}
+\noindent
+Moving on to our next goal,
+all this  research is   wasted {\em unless} it is applied
+within the CSS community. Accordingly, our next goal must be:
+
+\begin{formal}\noindent
+{\bf Goal4}:  get our recommendations used by CSS community (discussed in \S\ref{goal4}).
+\end{formal}
+\noindent
+For reasons of data availability, this proposal deals with CSS projects stored in the Github code repository.
+By our counts, there are at least 700 such projects. But what about
+other kinds of software?
+\begin{formal}\noindent
+  {\bf Goal5}:  apply our methods to CSS projects not stored in Github
+  (discussed in \S\ref{goal5}).
+\end{formal}
+\noindent
+Finally, we need one last goal:
+\begin{formal}\noindent
+ {\bf Goal6}:
+find a set of general methods   for improving CSS projects (discussed in \S\ref{goal6}).
+\end{formal}
+\noindent
+Technically speaking, {\bf Goal6} is a 
+{\em transfer learning task}~\cite{KrishnaMF16,Nam13,Ma2012,jing15,Kocaguneli2014,yu2017feature,jamshidi2017transfer,pan2009survey,qing2015cross,li2018cost};
+i.e.   lessons from one kind of project are   transferred
+to another. 
+As discussed in 
+\S\ref{mm}, recently we had much success with hierarchical clustering algorithms that generate a handful of models  that apply to hundreds of conventional projects~\cite{majumder2019learning}. In  this proposal,
+we would check if those methods work for CSS projects.
+ 
+% The experience to date (with standard open source software~\cite{xia2020predicting}) is that while the prediction models are local to each project,    the method used to generate those models works for multiple projects.  That said, as discussed below, there is reason to suspect that it might be possible
+% that CSS software is more regular that standard open source source. This means that it might be possible to learn general lessons for project health that apply to many CSS projects both within and without Github.
+ 
+ 
+\section{Background}
+\subsection{Frequently Asked Questions}
+\noindent
+ When discussing this proposal with colleagues, their first question is always:
+ 
+ \begin{center}
+ {\em FAQ1: are we trying to replace research scientists as they apply their creativity to computational science problems?} 
+ \end{center} That is not the goal here.
+ Instead,  {\IT} will explore  the software engineering decisions that can lead to
+project success or failure.
+ When we look at success stories for community-developed   software
+ (e.g. the Apache Foundation or the Linux Foundation~\cite{apacheprojects,linuxprojects}), we find that the most successful software  projects
+ are those  that attract  
+ a large user base
+ {\em and} a large funding base (where 3rd parties offer support for that code). While
+ the funding support any one source   may be small,
+ the combined funding   enables  the infrastructure needed for long-term viability.
+ 
+ When attracting a funding base for a project,   the {\em reputation} of that project is very important. No one wants to fund a flailing or failing project. Hence,
+ project health is often used to make the case 
+ (e.g. to upper-management) that  some   software is worthy of funding.
+A similar story can be told about how
+ to attract developers to user your tools~\cite{xia21}. No
+ one wants to based their work on some library
+ that, in the near future, will be abandoned by its
+ developers.  Perceptions of future  project health  of a project determines how many developers will be attracted to a project.
+ 
+ Note that in both cases,   improving project health (via the methods of this proposal)  increases
+ the probability that a project will become more sustainable (by attracting more
+ funding and more developers).
+  
+
+Another questions we are often asked is:
+
+\begin{center}
+{\em FAQ2: what can be changed in a software project to make it better?}
+\end{center}
+Decades of research into software analytics by PI Menzies~\cite{menzies2016perspectives,menzies2018software,bird2015art,xia2019sequential,xia2020predicting,tu2020changing,tu2021mining,peng2021defect},
+and others~\cite{kim2016emerging,buse2012information,amershi2019software,barry1981software}, shows that there are many  software project decisions that can make a project more (or less) attractive to other developers:
+Some of these reasons are high-level
+e.g.
+\bi
+\item
+Choice of platform; using/avoiding unpopular dependencies; how the project interacts with the scientific developer community; choice of software license; numerous internal
+architectural decisions; etc. 
+\ei
+Some of these reasons are much lower level; e.g.
+\bi
+\item
+If a specific application programmer's interface
+is tedious or complex to use, then external developers
+will avoid this API, and perhaps even this entire CSS project.
+\ei
+In either case (low-level or high-level issues), {\IT}
+will employ data mining on project data to:
+\bi
+\item Recognize a problem; e.g. recognize when the comments about an API are mostly negative;
+\item
+Propose a solution; e.g. recommend that the API be simplified.
+\ei
+Finally, we are often asked: 
+
+\begin{center}{\em FAQ3: if {\IT} has already been developed, what is the core science of the problem being discussed here?}
+\end{center}
+In reply we say that parts of
+{\IT} have only been tested only on general open source software, not CSS software. As discussed
+below, these two kinds of software
+are different enough to make it an open question if
+{\IT} will work for CSS. 
+
+As to the question about core science,
+while {\bf Goal1, Goal4, Goal5} are case studies (where we apply  old {\IT} to new data), 
+the other goals address core scientific issues
+ relevant for any data mining problem:
+ \bi
+ \item {\bf Goal2}: Can our learners make any predictions about what to change in order to alter future outcomes?
+\item {\bf Goal3}: Can we reduce the data sampling needed
+to build an adequate model?
+\item {\bf Goal6}: How general are our models (or must  we always reason over numerous different   models)?
+\ei
+\newpage
+\subsection{Definitions}\label{distinct}
+\noindent
+Our premise is that Computational Science Software projects (CSS)
+is very   
+different to standard open source software (SOSS).
+Hence, even thought we have preliminary results with {\IT} on SOSS code,
+we can not assert that {\IT} will work on CSS software until we test it.
+
+The next section offer empirical data on the   differences between CSS and SOSS. Before that, we offer some definitions:
+\bi
+\item {\em SOSS softxxware:} 
+Conventional open-source projects are developed and distributed
+for free redistribution~\cite{Raja12}. SOSS tools are widely used, even within the CSS community.
+For our purposes, the major different between CSS and SOSS is the level of domain comprehension
+seen in the developers.  While CSS developers have a deep understanding of the phenomena that
+are explored, an SOSS developer can be anyone in the world with any level of domain training.
+
+\item {\em CSS software:} Computational scientists explore software models than  
+explore the physical effects. Exploring such models can be  faster, cheaper, and safer than exploring
+the real world. For example, it is safer to explore models of hurricanes rather than the real thing.
+For another example,
+in material science, CSS explores the properties of new materials by
+synthesizing them. Such synthesis can be very  expensive so standard practice
+is to use software to cull the space of possibilities (e.g. via a finite
+element analysis).  
+A key feature of CSS software is that extensive background needed to understand, maintain and improve
+this kind of software. For this reason, many CSS developers have advanced degrees in Physics, Chemistry, etc.  
+Another difference is that 
+ CSS code is developed more for science reasons rather than,  in the case of SOSS, to satisfy they whims of the developers or the vagaries
+of the market place.
+\ei
+
+
+% While all this will be applied to computational science, the more general   point here is
+% a comment on how huamns should investigate the work.  
+% Brieman decribes two cluterures of statiscal anaysis of data: either assume an  apriori some distribution (and go hunt for it) or apply some open-ended data mining  method that hunts though a large space of possible
+% models before decising which one might be approrpaite. It is an open 
+% isse which approach is most prdocutive. Both approaches
+% have their
+% ardent supporters and detractors (e.g. the Google team lead by Norvig endorses ``open-ended''
+% while Bayesians urge us to first define our apriori assumptions before doing any mining).
+% This NSF proposal 
+
+
+
+
+
+%XXXX bridge from here to other stuff 
+\subsection{Results from Prior CSSI Projects}\label{prior}
+
+
+The   section offers  empirical evidence
+that CSS projects are fundamentally different to
+SOSS projects.  These results come from a  prior  CSSI-funded    project\footnote{Elements: Can Empirical SE be Adapted to Computational Science?
+Award \#1931425.  PI= Dr. Tim Menzies, NCState. 2019-2022.}.  The differences documented
+in this section justify the core premise of this work: even if parts of {\IT} are known to work for standard software systems, we still need to check if it works for CSS code. 
+
+
+ \begin{wraptable}{r}{1.5in}
+\vspace{-5pt}
+\centering
+\caption{Project selection rules. From~\cite{Kalliamvakou:2014}.}\label{tbl:sanity}
+\vspace{-5pt}
+\footnotesize
+\begin{tabular}{r|l}
+ Check   & Condition    \\\hline
+ \# Developers & $\geq$ 7 \\
+ Pull requests  & $>$ 0 \\
+Issues & $>$ 10 \\
+Releases &  $>$ 1 \\
+Commits & $>$ 20 \\
+Duration  & $>$ 1 year 
+\end{tabular}%}
+\vspace{-10pt}
+\end{wraptable} 
+The following  study used (1)~a
+ {\bf comparison set} of CSS and SOSS projects;
+ (2)~a set of 
+ {\bf project health indicators}.
+In this   study, we
+ compared 60 CSS projects to  1037 Github SOSS projects from~\cite{Majumder19}.
+ We  use  project data from Github since this keeps data on CSS and both SOSS in a standardized way.
+ 
+As to how we selected these SOSS projects,
+the software analytics community
+has long debated how to select ``interesting'' projects. Their standard ``sanity checks'' (used in this analysis) are shown in 
+Table~\ref{tbl:sanity}.
+
+As to our selection of CSS projects, 
+we combined projects associated with a specific NSF grant and from   contacts in the CSS community
+(from the Molecular Sciences Software Institute (MOLSSI) and the Science Gateways Community Institute (SGCI)).
+Many of these were single-person projects (e.g.   ``glue'' projects from the Gateway). While those kinds of projects are an important part of the CSS community, in terms of number of developers, we find that that we can cover far more developers by applying the Table~\ref{tbl:sanity} sanity checks to that sample of CSS projects.
+ 
+
+  These CSS and SOSS projects were compared using the following   health indicators:
+\be
+\item \textit{Developers}: are the active contributors to a project.
+% , who code and submit their code using commit to the code base. The number of developers signifies the interest of developers in actively participating in the project and volume of the work.
+  
+  
+
+\item \textit{Commits:} adds the latest source code to the repository.
+% in version control systems, a commit adds the latest changes to the source code to the repository, making these changes part of the head revision of the repository. 
+
+\item  \textit{Open \& Closed Issues:} are used to track ideas, enhancements, tasks, or bugs.
+
+% users and developers of a repository on Github use issues as a place to track ideas, enhancements, tasks, or bugs. As they work, they open issues with Github. When developers address those matters, they close the issues.
+
+\item  \textit{Tags}: are references that point to a specific time in the Git version control history. 
+%Tagging is generally used for marking version release (i.e., v1.0.1).
+
+
+\item  \textit{Releases:} are different versions published (and  signifies a considerable  change between each version)
+% mark a specific point in the repository’s history. The number of releases defines different versions published (and  signifies a considerable  change between each version).
+
+\item \textit{Duration:} length of the project from its inception to the current date or project archive date (in weeks).
+%of a project marks the length of the project from its inception to the current date or project archive date (in week as a unit of time). It signifies how long a project has been running and in the active development phase.
+\item \textit{Stars:}  people who
+  ``liked'' a project's repository (and bookmarked it to get updates on   future progress.)
+  
+\item   \textit{Forks}: how many people are interested in the repository to make a copy of it while  allowing users to freely experiment without affecting the original project.
+   
+   % Forking a repository allows users to freely experiment with changes without affecting the original project. 
+   % This number is an indicator of how many people are interested in the repository and actively thinking of modification of the original version.
+  
+\item   \textit{Watchers}:  Github users asking to be notified of repository activity, but have not become collaborators. 
+   % This is a representative of people actively monitoring projects, because of possible interest or dependency.
+\ee
+Note that some of these indicators are more insightful than others. ``Stars'', for example, is more a popularity contest than a deep semantic dive into a system. On the other hand, ``number of closed issues'' is a core measure  revealing who cares enough about   code to recompile it and fight with its errors.
+ 
+ 
+% \begin{wraptable}{r}{1.5in}
+% \vspace{-15pt}
+% \caption{Languages in 59 CSc projects.  
+% }\label{tbl:language}
+% \vspace{-12pt}
+%  \footnotesize
+% %\begin{threeparttable}
+% %\vspace{-10pt}
+% %\resizebox{!}{0.2\linewidth}{
+% %\setlength        abcolsep{10pt}
+%  \hspace{-3pt}\begin{tabular}{l|c|c}
+%  \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{Count} & \multicolumn{1}{c}{Percent}\\
+% \hline
+% Other & 3 &  5\%  \\ 
+% Javascript	& 2 & 3\% \\ 
+% C &	3 & 5\% \\ 
+% Java	& 5 & 9\% \\ 
+% Fortran	& 6 & 10\% \\
+% C++	& 17 & 29\% \\
+% Python & 23 & 39\% 
+% \end{tabular}
+% \vspace{-10pt}
+% %}
+% %\end{threeparttable}
+% \end{wraptable}
+\fig{health} compares these indicators for CSS and SOSS projects.
+ Based on  a combination of
+  a 95\% confidence bootstrap statistical test~\cite{efron94} and an A12 effect size test~\cite{arcuri2011practical}, we offer the following notes:
+  \bi
+  \item Both projects have similar number of
+  developers per project;
+  \item
+CSS  projects have a shorter  median {\em duration} 
+than SOSS projects   (281 weeks versus 409 weeks);
+\item Interestingly, in that time, the CSS projects
+  (a)~make more commits and (b)~close many more issues and (c)~make many more releases.
+  \item
+  That is to say, at least in this sample, CSS projects
+complete more work with the same number of people in 
+signficantly less time than    SOSS projects.
+  \ei 
+\begin{figure}[!b]
+~~~~~~~~\includegraphics[width=5.7in]{fig/compare.png}
+\caption{
+Standard open source projects are shown in turquoise
+\includegraphics[height=2mm,width=5mm]{fig/SOSS.png}.
+Computational science software projects are shown in  purple
+\includegraphics[height=2mm,width=5mm]{fig/CSS.png}.
+ By all these health indicators, the following
+CSS projects are better than SOSS:
+{\em ABINIT,
+AMBER,
+APBS,
+BLIS,
+GooFit,
+HooMD-blue,
+LAMMPS,
+LIBMESH,
+Luigi,
+MADNESS,
+MDAnalysis,
+MPQC,
+NWChem,
+OpenMPI,
+OpenMX,
+OpenMm,
+PCMSolver,
+PLUMED,
+Psi4,
+RMG-Py,
+SCIRun,
+TRILINOS,
+TauDEM,
+Use,
+Xenon,
+abaco,
+cctools,
+changa,
+cyclus,
+dealii,
+elasticsearch,
+forcebalance,
+foyer,
+hydroshare,
+irods,
+learnsphere,
+mast,
+mdtraj,
+metpy,
+openforcefield,
+openmmtools,
+orca,
+parsl,
+pymatgen,
+pyscf,
+quantum\_package,
+radical-pilot,
+signac,
+signac-flow,
+trellis,
+yank,
+yt}.
+}\label{fig:health}
+\end{figure}
+% \fig{health} is not our only evidence that of the robust
+% health of many CSS software. Many writers
+% such as  Basili, and others~\cite{basili08_hpc, carver07_environment, Prabhu11_cssurvey, kendall05_C, ragan14_pythoncs,faulk09_secs,sanders08_risk,Prabhu11_cssurvey} express are concerned that CSS projects
+% are using older tools (Fortran is often mentioned).
+% To test if CSS software is  using out-moded tools, we counted  what were the main languages in our CSS sample.
+% This test assumes that if CSS teams are mostly focused on ``old'' technology then most of those projects would use ``old'' languages and would not use automated testing
+% tools such as  Travis CI\footnote{Travis
+% CI is an automatic testing facility that is often run from Github.
+% From {\em Wikidpedia}: When Travis CI has been activated for a given repository, GitHub will notify it whenever new commits are pushed to that repository or a pull request is submitted.  Travis CI will then check out the relevant branch and run the commands specified in the  .travis.yml file, which usually build the software and run any automated tests. When that process has completed, Travis notifies the developer(s).}
+% The results of this ``are they using newer technology?'' test are shown in \tbl{language}.
+% As seen there,  C and Fortran are just 15\% of our sample.
+% Even if we call C++ ``old''\footnote{
+% Johanson et al.~\cite{johan18_secs} say that, in CSS, Fortran and C are examples of this ``old'' technology. The use of C++ is an interesting borderline case- Johanson et al. regard that as ``new technology'' even though it is now decades old. In any case, C++ is not a part of the \fig{language} results.}, then the ``older'' technologies of \tnl{language}
+% cover less than half the sample (44\%).
+% As to other measures of ``new'', we find that  $43/59=73\%$
+% have active
+% Travis CI connections. 
+% %We also observe some other SE methods and technologies include \textit{YT}~\cite{yt_project} and  \textit{AMBER}~\cite{Amber-MD} employ Docker~\cite{DOCKER} to simplify applications deployment,  \textit{LAMMPS}~\cite{lammps-sandia} and \textit{DEALII}~\cite{BangerthHartmannKanschat2007} can run on parallel processors, \textit{PSI4}~\cite{psi4} and \textit{XENON}~\cite{xenon} to test   code coverage. 
+One way to summarize the above is that:
+ 
+ 
+  \begin{center}
+  {\em Computational science projects are performing much  better than standard SOSS
+projects.} 
+  \end{center}
+This result is at odds with  prior work~\cite{basili08_hpc, carver07_environment, Prabhu11_cssurvey, kendall05_C, ragan14_pythoncs,segal_enduser,  carver13_perception, sanders08_risk} that complains that  CSS software is somehow
+problematic:
+\bi
+\item
+Basili et al., and others~\cite{basili08_hpc, carver07_environment, Prabhu11_cssurvey, kendall05_C, ragan14_pythoncs} say that
+computational scientists prefer
+``older''-style programming languages and technologies (and disregard most of the newer SE methods). To that, we would reply that even if they are using supposedly older tools, 
+\fig{health} suggests CSS developers are using those tools very effectively. 
+\item
+Segal~\cite{segal_enduser},
+and others~\cite{basili08_hpc, carver13_perception, sanders08_risk} comment that  few CSS scientists are trained in SE.  This is concerning as a lack of training might lead to sub-optimal software
+development
+ (for many of these people,
+learning SE is perceived as an excessive additional burden~\cite{boyle09_lessons}).
+To this concern we would reply that however they are trained, 
+\fig{health} suggests that CSS developers are
+using that training very effectively.
+\ei
+% % Before we list those widely-held beliefs, we stress that our research
+% % suggests that the following beliefs
+% % are \underline{\bf NOT} true (at least, for the CSS software we examined in Github):
+% % \bi
+% % \item
+% % {\em Belief1: CSS developers have
+% % old tools.}
+% % According to this belief, CSS software uses old,
+% % and possibly sub-optimal and out-dated, methods.
+% % For example,
+% % The usual argument here is that CSc Scientists are skeptical of modern SE methods and new technologies/languages.
+% % This is based on several factors such as
+% % (a)~a prejudice against  newer languages;
+% % (b)~a perception that CSS developers would not 
+% %   find new tools very  useful~\cite{Prabhu11_cssurvey};
+% %   (c)~a decades-long commitment to  older-style languages (Fortran \& C)~\cite{faulk09_secs}.
+% % (d)~a  belief that the extra features of the newer languages needlessly conflate functionality that can be more easily implemented in, e.g., one line of ``C'' macros~\cite{sanders08_risk}; 
+% % \item
+% % {\em Belief2: CSS developers have  the wrong skills,
+% % and may not even want to learn new ones.}
+% % CSS software is worse that other
+% % code, it is said,  since it is built
+% % by people not trained in up-to-date methods.
+% % For example,   
+% \ei
+% Neither of these beliefs are supported by our results.
+% The discussion around \tbl{language} found not evidence of a preponderance of older technology. Further,
+% the results of \fig{health}, CSS projects are delivering and maintaining more software in less time with fewer developers than SOSS projects. 
+To explain this discrepancy between
+the optimism of \fig{health}
+and the pessimism of Segal, Basili
+and others~\cite{basili08_hpc, carver07_environment, Prabhu11_cssurvey, kendall05_C, ragan14_pythoncs,segal_enduser,  carver13_perception, sanders08_risk}, 
+we offer three notes:\bi
+\item
+Software development is certainly difficult.
+Hence, Segal, Basili
+and others are certainly correct in warning the CSS software development is difficult. That said,
+by asking a slightly different question, we arrive a new perspective not previously reported. Instead of asking
+``Q1) is CSS code development difficult?'', we   ask instead ``Q2) is CSS code development
+{\em comparatively more difficult} than
+other kinds of software?''. And as \fig{health} shows us, the answer to Q2 is ``no''.
+\item
+Most of the papers lamenting the state of CSS code come from before the recent Silicon Valley boom. In our recent discussions with postdocs and Ph.D. students working on CSS projects,
+we found that these developers were well aware of the potential salaries if they are adept at the popular tools used by contemporary agile software companies.
+Hence we suggest that something of a ``phase change'' has come over
+CSS software and that newer codes should be expected to be somewhat more
+better than past offerings.
+\item
+When computational scientists developers write CSS code, they are exploring domains with  an extensive background theory (all the physics and chemistry achieved in thousands of years of scientific research).  When other developers write code
+about (e.g.) database systems, they are writing about domains with only a few decades
+of theory.  Also, CSS developers typically have multiple degrees, some even with higher degrees. Conventional software authors, on the other hand, many have a far less
+scientific training. When stated this way, it is hardly surprising that developers with more scientific working over a  richer background theory generate better systems than otherwise.
+\ei
+\subsection{Measuring and Mitigating Project Health Issues}\label{mm}
+ \begin{wraptable}{r}{3in}
+ \begin{adjustbox}{max width=3in}
+ \begin{tabular}{l|rrrrrr}
+\multicolumn{7}{c}{ error =  MRE =  $\mathit{abs}(\mathit{predicted} - \mathit{actual})/\mathit{actual}$ (so {\em less} is {\em better})   }\\\hline
+\rowcolor[HTML]{ECF4FF} 
+
+{\cellcolor[HTML]{FFFFFF} predicting for:} & {\color[HTML]{000000} KNN} & {\color[HTML]{000000} LNR} & {\color[HTML]{000000} SVR} & {\color[HTML]{000000} RF} & {\color[HTML]{000000} CART} & {\color[HTML]{000000} DECART} \\\hline
+{\color[HTML]{000000}   \#commits} & \cellcolor[HTML]{E2E2E2}53\% & \cellcolor[HTML]{F3F3F3}107\% & \cellcolor[HTML]{E9E9E9}68\% & \cellcolor[HTML]{E1E1E1}53\% & \cellcolor[HTML]{E2E2E2}52\% & \cellcolor[HTML]{DCDCDC}41\% \\
+{\color[HTML]{000000}   \#contributors} & \cellcolor[HTML]{CACACA}32\% & \cellcolor[HTML]{9F9F9F}26\% & \cellcolor[HTML]{D9D9D9}35\% & \cellcolor[HTML]{898989}24\% & \cellcolor[HTML]{989898}24\% & \cellcolor[HTML]{666666}\textcolor{white}{18\%} \\
+{\color[HTML]{000000}    \#stars} & \cellcolor[HTML]{BFBFBF}30\% & \cellcolor[HTML]{D9D9D9}35\% & \cellcolor[HTML]{D9D9D9}36\% & \cellcolor[HTML]{B9B9B9}30\% & \cellcolor[HTML]{DADADA}37\% & \cellcolor[HTML]{9F9F9F}26\% \\
+{\color[HTML]{000000}  \#open issues} & \cellcolor[HTML]{D9D9D9}36\% & \cellcolor[HTML]{DEDEDE}45\% & \cellcolor[HTML]{DBDBDB}39\% & \cellcolor[HTML]{D9D9D9}34\% & \cellcolor[HTML]{C3C3C3}31\% & \cellcolor[HTML]{8C8C8C}23\% \\
+{\color[HTML]{000000}   \#closed issues} & \cellcolor[HTML]{DCDCDC}41\% & \cellcolor[HTML]{B5B5B5}29\% & \cellcolor[HTML]{DDDDDD}44\% & \cellcolor[HTML]{ADADAD}28\% & \cellcolor[HTML]{CACACA}32\% & \cellcolor[HTML]{828282}22\% \\
+{\color[HTML]{000000}   \#closed pull requests} & \cellcolor[HTML]{DADADA}38\% & \cellcolor[HTML]{DBDBDB}39\% & \cellcolor[HTML]{DBDBDB}40\% & \cellcolor[HTML]{DEDEDE}44\% & \cellcolor[HTML]{DCDCDC}41\% & \cellcolor[HTML]{C3C3C3}31\%
+\end{tabular} 
+\end{adjustbox}   
+\caption{Predicting project health. Median errors  in  1,159 SOSS projects~\cite{xia2020predicting}.  Darker cells=less
+error. 
+Lowest errors from ``DECART''. }\label{tbl:med_mre}
+\end{wraptable}
+Software development can be hard. Even if \fig{health} shows that CSS projects
+might be relatively stronger than SOSS projects, there are still all-to-many examples
+of NSF-funded CSSI projects that failed, or fell into disrepute, or have been ignored
+by the rest of the community.
+To fix that problem this section describes  methods to {\em find}, then {\em fix}
+a failing project. 
+
+Just to be clear, {\em none} of the material in this section
+have yet been applied to CSS projects. The methods of this section would need 
+significant extension to achieve the goals listed in the introduction. In the {\em next} section  of this proposal,
+we addresses how we would test, then adapt,
+these methods for CSS projects.
+ 
+PI Menzies' prior work with generating health predictors (for non-CSS software)
+was reported in~\cite{xia2019sequential,xia2020predicting}. 
+In that report it was noted that numerous research had studied
+project health~\cite{jansen2014measuring,manikas2013reviewing,chaoss,weber2014makes,borges2016predicting,wang2018will,bao2019large,kikas2016using,jarczyk2018surgical,qi2017software,chen2014predicting}. PI Menzies found numerous shortcomings with that
+prior work:
+\bi
+\item That prior work usually studied a very small number of projects (perhaps, just even one);
+\item That prior work usually explored a small number of indicators
+(often, only one);
+\item That prior work did not explore a range of learner methods;
+\item That prior work did not apply tuning methods to automatically infer the best learner control parameters.
+\ei
+% For example,
+% the CART regression tree learner has hyperparameters:
+% \bi
+% \item 
+% max\_features: number of features to consider when looking for the best split;
+% \item 
+% max\_depth:   maximum depth of the learned tree;
+% \item 
+% min\-sample-leaf: minimum samples required to be at a leaf node
+% \item
+% min\_sample\_split: minimum samples required to split internal node
+% \ei
+ 
+
+
+
+
+
+
+
+~To address those issues, PI Menzies (and his student
+Mr. Tianpei  Xia) applied their DECART tool to a wide range 
+of projects~\cite{xia2020predicting}. DECART is  a recursive entropy learner 
+tuned by 
+a hyperparameter optimizer~\cite{storn1997differential}. PI Menzies tested DECART on
+1100+ Gitub projects to
+explore seven health indicators. In the study,
+DECART was compared to five different learners (linear regression, CART, random forests, k-nearest neighbor, and support vector regression). It was found that:
+\bi
+\item
+The right-hand-side column of  \tbl{med_mre}  
+shows that DECART's errors
+($abs(want\;-\;got)/want$)
+are much lower than the other studied methods.
+ These results     are 
+ unexpectedly accurate.
+Prior experiment with effort estimation had generated predictions
+ with error ranging up to 200\%~\cite{kocaguneli2012value}.
+ Hence our  pre-experimental expectation was that  these
+ prediction errors would be up to ten times larger than what is seen in the right-hand-side
+ column of \tbl{med_mre}.
+\item
+We have repeated the \tbl{med_mre} analysis for predictions up to two years into the futre.
+The prediction error was observed to increase, but not by very much  (as little as 5 to 10\% more).
+\ei
+In summary,   these predictions are hence accurate enough to predict medium-term trends in a project (at
+least for the SOSS projects studied here).  
+ 
+\definecolor{aoenglish}{rgb}{0.0, 0.5, 0.0}
+ \definecolor{applegreen}{rgb}{0.74, 0.85, 0.75}
+
+
+That said, \tbl{med_mre} is more a 
+{\em starting point} than a {\em conclusion}.
+All these results are from SOSS project so,
+without further testing,
+it is unclear if these methods   work on CSS projects.
+Also,   once we can predict for  $X$,
+then the next question to ask is 
+``how can we improve $X$''?  
+
+To address that issue for (non-CSS) projects, PI Menzies
+and his student Mr. Kewen Peng made several  observations~\cite{peng2021defect}.
+ {\bf FIRSTLY}, the delta $\Delta$
+between two regions of the data is
+a candidate {\em plan} for moving from
+more region to another. For example, consider the defect prediction
+regression tree of \fig{XTREE}.
+Each branch of that tree a logical conjunction.
+To create a plan that changes a project from
+(e.g.) a defective 
+  \textcolor{orange}{{\bf current branch}}  to a better
+ \textcolor{aoenglish}{{\bf desired branch}}, we can apply the 
+$\Delta$ between the two branches. In the case of the example of
+\fig{XTREE}, plan is to   minimize two static code attributes {\em lcom} and {\em cam}.  Such values can be changed via {\em software refactoring operators}
+such as ``fold a sub-class into a superclass''; or ``push down a super-class method into 
+the children''.
+
+
+
+{\bf SECONDLY},  the models generated  by DECART (that lead to  \tbl{med_mre}) are of the same  form as \fig{XTREE}.
+\begin{wrapfigure}{r}{3in}
+   \includegraphics[width=3in]{fig/XTREE_samp.pdf} 
+    \caption{  A {\em plan}
+     is the delta $\Delta$
+     that moves a project from the defective  \textcolor{orange}{{\bf current branch}}
+    (where defect probability  is 1.00)  to another
+     \textcolor{aoenglish}{{\bf desired branch}} (with zero defects).}
+    \label{fig:XTREE}
+\end{wrapfigure}
+That, is DECART could be a front-end to a project planning process.
+Note that
+this  planning process that could be applied to    any model that comments on projects process or project attributes that tend towards  better/worst results (i.e. to more than merely the static code attributes of \fig{XTREE}).
+ 
+ 
+
+
+
+
+~{\bf THIRDLY},   it is important to check the plans found in this way. Such plans  are hardly causal determinants of behaviour  
+(causality is  precisely defined--    a single counterexample can refute the causal claim~\cite{AAAI_1990}). 
+These  plans  have some likelihood (but no certainty) that they will work in the
+way predicted for future projects. Hence, this kind of plan generation has to be paired with some {\em sanity check}
+that prunes bad plans. 
+Accordingly,
+Menzies and Peng~\cite{peng2021defect}
+used a {\em precedence sanity check} to only endorse  plans that proposed changes found in the historical record of a project. They found
+that plans found in this way were much smaller than those proposed
+by prior state-of-the-art mechanisms;
+and just as effective (and sometimes better) than that prior work.
+To assess that effectiveness, Menzies and Peng ran the
+following \underline{\bf a,b,c what-if procedure} queries
+across the historical
+\label{abc}
+log of a software projects.
+This procedure takes project information divided into 
+{\em oldest}, {\em  newer}, and {\em most recent} data, then:
+\bi
+\item[a.] Use the {\em oldest} data to determine what attributes were often changed in a project,
+\item[b.] Use the {\em newer} data to build plans;
+\item[c.] Divide the {\em most recent}  data into (i)~those projects that {\em follow}ed the plans;
+ and (ii)~{\em other}.
+\ei
+They then found that  the {\em follow}ing
+set had far better outcomes (lower defects) than 
+the {\em other}s~\cite{peng2021defect}.
+That is, if those plans had been available to developers, and they had applied them,
+then a large number of the projects in the {\em follow}ing set would have the predicted outcome.
+
+ \section{Research Plan}
+ 
+ The above results showed that for non-CSS projects, it is possible to make predictions about the future
+ health of a software project, then propose effective plans to improve that future state.
+ The rest of this proposal discusses ways to test if the above methods apply to CSS projects.
+ 
+In the following,
+ {\bf  Goals1,2} are ``preliminary'' work with a few sample projects
+and {\bf Goal3} is where we will attempt to scale up these methods. {\bf Goal4} 
+is where we check the effect of the scale up and {\bf Goal5} is an opportunistic goal to handle
+certain special cases not handled by {\bf Goals1,2,3,4}. Finally, {\bf Goal6} is an overview
+on all the results seen in this work
+(and in that part of this work, we will look for
+a small number of general models).
+
+
+
+  
+ \subsection{Research Goal1:  predict   project health for  some   CSS projects}\label{goal1}
+
+Currently, we know of around 700 CSS projects within Github. For a sample 
+of those projects, we will apply the above methods to generate predictions for the nine
+health indicators of \S\ref{prior} (on page \pageref{prior}).
+
+\textcolor{red}{{\bf Measurable Outcomes:}}
+We would generate the \tbl{med_mre}
+error measurements,  but for CSS
+projects.  Saro et al.~\cite{sarro2016multi} comments that for software project management, these errors should be less than 25 to 50\%. Hence we would say {\bf Goal1}
+is achieved if we can make low predictions with that kind of error.
+
+
+
+\subsection{Research Goal2: 
+plan effective improvements for   some CSS projects}\label{goal2}
+
+\noindent
+This proposal seeks improvement
+tactics for CSS projects that (a)~are generally useful (and cover many projects);
+(b)~yet also sufficiently powerful for specific projects.
+Currently, we know   
+  five  such  tactics:
+\be
+\item The {\bf planning algorithm} shown above: This
+ could be applied to a wide range of attributes or goals.
+\item Those plans could be used to improve the 
+{\bf nine    project health indicators} of \S\ref{prior} (or, indeed, any other effect recorded in Github data).
+\item
+{\bf Sentiment analysis}: This is a particular kind of data mining tool that looks at thousands to millions of code comments and infer where in the code base developers or users are have the most difficulty. Such tools can be applied to very large code bases to find regions that need the most rework.
+For an example of source code sentiment analysis, see Table~\ref{source}. PI Menzies and his students have much
+recent success with identifying one particular kind of sentiment: {\em self-admitted technical debt}~\cite{zhesatd20}.
+When developers cut corners and make haste to rush out code, that
+code often contains technical debt (TD), i.e. decisions that must be
+repaid, later on, with further work. Technical debt is like dirt in the
+gears of software production. As TD accumulates, development
+becomes harder and slower. Technical debt is often ``self-admitted'' by the developer in code comments~\cite{Potdar14}; e.g. Potdar and Shihab~\cite{Potdar14} concluded that developers intentionally leave traces of TD in their comments (saying things
+like ``hack, fixme, is problematic, this isn’t very solid, probably a
+bug, hope everything will work, fix this crap'').
+That said, these self-admitted problems are often lost in
+the rush to finish a release. Nugroho et al.~\cite{Nugroho11} report that medium-sized projects can carry around so enough technical debt
+to significantly delay  enhancements and maintenance.
+PI Menzies and his student Dr. Zhe Yu found they could
+improve on current automated solutions  for identifying SATDs 
+using a two-stage approach (where stage1 used simple methods
+to find majority of simple SATD problems and stage2 used
+much more complex methods to resolve the residual issues)~\cite{zhesatd20}. 
+\item {\bf Automatic tuning methods}:  Many software systems come with configuration options; 
+\bi
+\item
+e.g. 20 binary options means over a million possible configurations. 
+\item
+e.g. the Makefile of MySql has over a billion possible different configurations;
+\item 
+e.g. data miners are controlled by a large number of hyperparameters. Nearest neighbor methods, for example, need to know (a)~how many nearest neighbors to explore and 
+(b)~how to to combine the information from those neighbors.
+\ei
+Automatic configuration tools can find configurations that are much better than those set by humans~\cite{Xu15a,shu2019improved,xia2019sequential,agrawal2018better,fu2016tuning,agrawal2018wrong,spike_jc_19,xia2018hyperparameter,chakraborty2019software,nair2017using}.
+PI Menzies and his students have much recent success with building very fast, very scalable automatic tuning methods~\cite{agrawal18,flash_vivek,tu2021mining}
+Table~\ref{casestudy} reports a case
+study we successfully applied this
+optimization technology to improve workflows from the  Pegasus Research group. 
+\item
+{\bf Automatic AI-based code  recommender systems:} Given a very large corpus, neural networks can learn expected words in a program. Such tools can peek at a few terms written by a programmer, then comment on what needs to come next in that code. Examples of these kinds of tools include Codex, Copilot, TabNine, Kite and Facebook's SapFix~\cite{codex,sapfix,xu-ide}.
+\ee
+\begin{table}[!t] 
+\caption{Sentiment analysis   finds code   disliked by developers (that deserves improvement). From~\cite{Guzman14}.}\label{source}
+\footnotesize
+\begin{tabular}{p{2in}p{3.5in}p}\\\hline
+Commit message &Word and sentence score& Total
+score\\\hline
+Sigh? It’s fixed, man – rejoice!! & Sigh?[sentence: 1,-1] It’s fixed ,man –rejoice[4]!![+1 punctuation emphasis]
+[sentence: 5,-1]
+&
+5\\
+
+% Wow amazing thread! even If I’m not a Rails
+% developer!&
+% Wow[3] amazing[3] [+1 consecutive positive words] thread![+1 punctuation
+% emphasis] [sentence: 5,-1] even If I’m not a Rails developer ![+1 punctuation
+% mood emphasis] [sentence: 2,-1]
+% &
+% 5\\
+MY PRECIOUSSS!!! & MY PRECIOUSSS[3] [+0.6 spelling emphasis] !!![+1 punctuation emphasis]
+[sentence: 5,-1]&
+5
+\\
+If PHP code is producing errors with register globals on you are terrible terrible programmer. If you are using magic quotes you are
+simply stupid.  &
+If PHP code is producing errors[-2] with register globals on you are terrible[-4]
+terrible[-4] [-1 consecutive negative words] programmer.[sentence: 1,-5] If you
+are using magic quotes you are simply stupid[-3].[sentence: 1,-3]
+&
+
+-5\\
+% % But this commit message makes me sad :cry: &But this commit message makes me sad[-4] :cry[-4] [-1 consecutive negative
+% % words] :[sentence: 1,-5]&
+% % -5\\
+% This is really terrible - changing :private to
+% :public without any deprecation warning? Not
+% cool. &
+% This is really terrible[-4] [-1 booster word] -changing :private to :public without
+% any deprecation warning?[sentence: 1,-5] Not cool[2] [*-0.5 approx. negated
+% multiplier] [sentence: 1,-5].&
+% -5\\
+\hline
+\end{tabular}
+\end{table}\begin{table}[!t]
+\caption{Automatic tuning methods improving workflows for the  Pegasus Research group and Renaissance Computing Institute at UNC (RENCI). From~\cite{tu2021mining}. }\label{casestudy}
+\small
+\begin{tabular}{|p{.98\linewidth}|}\hline
+Orchestrating and managing data movements for scientific workflows within and across   diverse infrastructures  is challenging~\cite{taylor14_workflows}. The problem is exacerbated by different kinds of failures and anomalies that can span all levels of such highly distributed infrastructures (hardware infrastructure, system software, middleware, networks, applications and workflows). Such failures add extra overheads to scientists that forestall or completely obstruct their research endeavors or scientific breakthrough.
+At the time of this writing, these problems are particularly acute (the COVID-19 pandemic has stretched the resources used to monitor, maintain and repair the infrastructure).
+  As shown here by the red dots, network traffic can spike, denoting periods of time where a site cannot handle all the incoming traffic (this data comes from RENCI-- 
+   the   Renaissance Computing Institute at UNC): 
+\begin{center}
+\includegraphics[width=4in]{fig/spike.jpg}
+\end{center} 
+All previous anomaly detection work in scientific workflow lacks (i) model optimization and (ii) a tuning study.  This is hardly ideal since much prior work    advises that using data miners without  parameter optimizer leads to sub-optimal results~\cite{agrawal18, fu2016tuning, spike_jc_19}.
+PI Menzies and Mr Tu showed that for workflows seen at the Pegasus research group,   
+standard anomalies learning tools for faulty TCP file transfers (without tuning) can be considered \textit{harmful} and \textit{misleading} to the reliability of networked infrastructures~\cite{tu2021mining}. 
+%Among the cyberinfrastrucutre, such anomalies may change the experimental results that lead to scientific progress can be forestalled and discovery results can be even refuted.
+Their proposed improvement utilized better data mining methods; specifically,
+ an ensemble model (XGBoost~\cite{xgboost}) and a sequential model-based tuner (FLASH~\cite{flash_vivek}). They found that
+\bi 
+\item Tuning  learners will improve the relative performance up to 28\%, 29\%, and 40\% for F-measure, G-score, and recall   from the prior state-of-the-art  work~\cite{tcp_indis_19}. 
+\item Tuning changes previous conclusions on what learner is the best performing, i.e., from random
+forests (as recommended by prior work) to XGBoost (recommended by this work).
+
+\item Tuning changes previous conclusions on what  factors are most
+influential in detecting for anomalies by 30\%. That is, a side-effect of this work
+is that it is time to change what we monitor for. 
+\ei
+  \\\hline
+ \end{tabular}
+  \end{table}
+Computational considerations suggest that, of the above five tactics, we will be able to apply Tactics1,2,3 more often than Tactics4,5.
+Tactics1,2,3 are data mining methods that can easily scale-up
+to many   projects. Tactic4 is slower since, for each project,
+it must re-run the learners hundreds to millions
+of times (to learn the best tunings for that project). Lastly, Tactic5 might be slowest of all since it could
+require  pre-training a neural net of  a very large corpus of CSS code.
+
+ \label{tactics2}
+\textcolor{red}{{\bf Measurable Outcomes:}} For   tactics 1,2,3 we can assess the results of our interventions using the  
+    {\bf a,b,c what-if procedure} defined   at the end
+of \S\ref{mm}
+(on page \pageref{abc}). Also, for tactic3's self-admitted technical debt, 
+if we   track the levels of technical debt in a project (using our data miners) 
+and the metrics
+of \fig{health}, then
+then we can detect if our
+technical debt reductions are having benefits within a projects.
+As to tactics4,5 the outcomes we want to measure would need to be tuned to specific systems we are tuning or 
+for which we are generating recommendations. 
+ 
+ 
+
+
+\subsection{Research Goal3:  achieve Goal1,Goal2 via   minimal data collection}\label{goal3}
+
+Given the size of the CSS community, the above goals may only be widely applicable if we can tame the data
+collection cost associated with this kind of analysis.  
+To understand that collection cost, we note
+that any data miner uses large databases of $x,y$ examples to generates a model
+$f$ of the form:
+\[
+y=f(x)
+\]
+Here, $x$ is project information 
+(such as lines of code, number of recent updates, number of developers, etc) and $y$ is information about project performance (such as the ease of use of this code, the penetration of this code, the cost of developing the code).
+Given access to Github, it is now possible to automatically collect $x$ data fro a very large number of projects. However, collection accurate $y$ is another matter.
+Even when projects offer $x,y$ data, the $y$ labels
+are often questionable. 
+For example,  Yu et al. checked the $y$ labels
+ (about software defects)
+ from one Github project and
+ found that more than 98\% of
+the false positives (reported by prior work) were actually true positives, casting doubt on
+work that used the original dataset~\cite{jitterbug}.
+PI Menzies' graduate student Mr. Huy Tu~\cite{tu2019better} has developed cost models describing the effect required to check these $y$ labels where:
+\bi
+\item
+Data is checked by pairs  of web-based crowd-sourced  workers using the Amazon Mechanical Turk facility (so results are not accepted unless two people
+ agree on the label).
+\item
+The crowdworkers are assessed by questions with known answers (so we can prune unreliable  workers).
+\ei
+According to the Tu model,   it would take 
+200,000 hours and cost \$2,100,000 to  review the $y$ values related
+to known defects in the $\approx 700$ CSS projects we can find in Github. 
+
+To say the least, such large costs
+are   unacceptable.
+Hence, Mr. Tu went on    to investigate
+{\em semi-supervised methods} for reducing the cost associated with labelling Github data.
+Working with non-CSS data, Mr Tu found that he could build effective software quality prediction models
+by labelling just 2.5\% of the data~\cite{tu21Frugal}. Note that a 2.5\% reduction   reduces that \$2,100,000 to \$52,500 which, is spread out of a three year NSF projects becomes more acceptable at \$17,500 per year (a much more reasonable sum). 
+
+For a brief tutorial on semi-supervised learning, see Table~\ref{inside}.
+Note that none of those methods have yet to be  tested on CSS software. Nor have they been used
+when trying to achieve {\bf Goal1,Goal2}. Hence...
+
+
+\textcolor{red}{{\bf Measurable Outcomes:}} To test the effectiveness of semi-supervised 
+learning for reasoning about CSS projects, we would generate ``trade-off graphs''
+where we repeat the analysis of {\bf Goal1, Goal2} using fewer and fewer
+$y$ levels (selected by  semi-supervised learning). {\bf Goal3} would be declared achievable
+if we can achieve competency for {\bf Goal1, Goal2} after labelling 2.5\% (or less) of the
+data.
+\begin{table}[!t]
+  \caption{A brief tutorial on semi-supervised learners 
+}\label{inside}
+ \small
+ \begin{tabular}{|p{6.35in}|}\hline
+ 
+ {\em Semi-supervised learners}~\cite{mit06}  train their models by
+combining a small amount of labeled data ($Y$ values) with a large amount of unlabeled data ($X$ values).
+More specifically, 
+  semi-supervised algorithms~\cite{mit06}  
+utilize
+{\em manifold}, {\em continuity},
+and {\em clustering}
+assumptions.
+The {\em manifold} assumption is that data
+lies approximately on a manifold of a much  lower dimension than the input space.
+Under this manifold assumption, higher-dimensional data
+is approximated in a much lower dimension space, with little or no performance loss~\cite{NIPS2004_74934548}. 
+When  data is spread over just a few underlying dimensions, then there are fewer ways that examples can differ.
+Hence, there is more 
+{\em continuity} between 
+nearby examples and we do not need to reason separately about each example. Rather,
+we can {\em cluster} similar examples and  reason about one item per cluster. 
+Using those assumptions, there are many ways to extrapolate from a small number of labels to a larger set of data~\cite{zhu2005semi}.
+For example, here we see a   recursive bi-clusters
+the data down to $n=\sqrt{N}$ of the data: 
+
+\begin{center}
+\includegraphics[height=3.6cm]{fig/fastmap.png}\hspace{1cm}
+\includegraphics[height=3.6cm]{fig/tree1.png}
+\end{center}
+
+This tree of clusters was
+generated via a recursive
+  FASTMAP procedure~\cite{faloutsos1995fastmap}. Here, 
+  $M$ is any example (selected at random).
+  $E$  (east) is an example   furthest from $M$ and 
+  $W$ (west) is an example   furthest from $E$.
+  Note that $E,W$ can be found in time
+  $O(2N)$.
+  If  
+  $c=dist(E,W)$ then
+    other examples have distances $a,b$  to $E,W$, respectively and distance
+    \mbox{ $x=(a^2+c^2-b^2) / (2c)$}
+    on a line from  $E$ to $W$.
+  By
+splitting   data on   median $x$,
+the examples can be then bi-clustered.
+After generating the leaf clusters,
+we can  (i)~evaluate just the centroid of each cluster;
+then (ii)~propagating that label to all other items in that leaf.
+
+As to other SSL approaches,
+ {\em self training} algorithms~\cite{Yarowsky}  incrementally
+guesses new labels from a learner
+trained on all labels  seen to date.
+Further, {\em GMM with expectation-maximization} algorithms~\cite{jonathonGMM}
+use a Gaussian mixture
+model to cluster the data (and use those clusters to label the data).
+Furthermore,
+ {\em label propagation algorithms}~\cite{Zhu02learningfrom} guess
+labels using a majority vote across the labels  seen in nearby examples (or clusters).
+Label propagation algorithms never update their old labels.
+ {\em Label spreading} algorithms~\cite{Zhou04}, on the other hand,
+update old labels using with feedback from subsequent labelling.
+Label  spreading algorithm iterates on a similarity matrix
+between example and   normalizes the edge weights by computing the normalized graph
+of the Laplacian.\\\hline
+\end{tabular}
+\end{table} 
+
+
+\subsection{Research Goal4:  get our recommendations used by CSS community}\label{goal4}
+
+All the above work is pointless unless we can convince the
+CSS community to use our results. In this regard, 
+our experience offers much hope that these results
+will be widely adopted. What we found is that if we go to projects with lists of problems and proposed improvements from that project,
+then we find a ready audience. For example:
+\bi
+\item See the work documented in Table~\ref{casestudy};
+\item We spend 2021 in bi-weekly meetings with the Linux kernel
+team, discussing how our data mining results can improve their code.
+\ei
+In our experience, the only thing stopping the widespread
+adoption of our prior results was the COVID crisis (that forced
+many teams into working less with other teams and more with their
+own internal workers). For the period 2022-2025 we anticipate far fewer problems with
+COVID and much more collaboration between CSSI teams.
+
+
+In any case, it will be important to track the application of these results. Hence:
+
+\textcolor{red}{{\bf Measurable Outcomes:}} We will   log all our interactions with CSSI projects. We foresee that these interactions
+will take three forms: (a)~initial tentative contacts;
+(b)~preliminary results; (c)~review of impact, 12 months later.
+We would say that {\bf Goal4} is achieved if our contacts is effective and frequent:
+\bi
+\item By ``frequent'', we are aiming for a least one tentative contact per month and four sets of preliminary results per year.
+\item By ``effective'', we would use the same measurable outcomes
+as seen in {\bf Goal3}.
+\ei
+
+
+\subsection{Research Goal5:  apply our methods to  CSS projects not stored in Github}\label{goal5}
+
+For most of this project, we have assumed using data
+from Github. But not all projects are stored in the location.
+hence we need to check of our methods work for data from other venues.
+
+We view {\bf Goal5} as being 
+strongly connected to {\bf Goal4}. As a side-effect of all
+the interactions associated with that goal, we will find
+examples of code that is stored in locations other than Github.
+
+What happens after that depends on the nature of those other sources:
+\bi
+\item
+If these other locations support large scale data access
+via web-based methods, we anticipate that our tools will readily transfer to other venues.
+\item
+Otherwise, we may be unable to achieve this goal.
+\ei
+In any case, it is important to track this issue:
+
+
+\textcolor{red}{{\bf Measurable Outcomes:}} We will log all the non-Github sources found as part of this work. Also,
+we will   log when (or if) our tools can achieve {\bf Goals1,2,3,4}.
+
+
+\subsection{Research Goal6:  demonstrate that there exists a set of general methods   for improving CSS projects}\label{goal6}
+
+
+Ideally, science can produce general
+conclusions that hold in multiple contexts.
+By that measure, how much of the above 
+is ``scientifiic''? 
+
+To say that another way,
+what is the external validity of the conclusions reached
+via the above methods? If we studied (say) 700 CSS projects, would we find general principles that hold across all these projects?
+Or are all CSS projects are fundamentally different and nothing
+can be generalized from one project to another?
+
+ Before answering these quetions, we first motivate {\em why} they are worthy of discussion.
+ If we could find a small number of models that represent the rest then that would have several benefits:
+\bi
+\item {\bf Training newcomers:} new CSS developers could be initiated by getting them to study the factors leading to CSS  project success or failure.
+\item {\bf Tool development:} new tool development for CSS software could be focused
+on the issues that our models find are most prevalent and most important for mitigating unhealthy project.
+\item 
+{\bf Early code quality improvement:} Suppose the year is 2026 and   this proposal found how CSS projects divide into communities. Suppose further
+that the methods of this proposal have found quality predictors and effective plans for each of those communities. Now, new CSS
+projects could quickly find the predictors and improvement plans most relevant to them {\em without running any of the tools of this project}just by (a)~finding its community; then (b)~looking up the predictors and plan known to work in that community.  
+\ei
+But what is the pragmatic reality about the probability of   general principles for 
+improving CSS software?
+Given the diversity of CSS systems, it seems unrealistic to believe that some single model holds for all projects. 
+But if we cannot learn single models (for predicting project success) across all CSS projects, then perhaps we can find communities of projects with similar properties. If so, then to
+reason about some new project, we need only know what ``community''the new project belongs to (after which, we can apply lessons learned from current members of that community).
+
+Technically speaking, {\bf Goal6} is a 
+{\em transfer learning task}~\cite{KrishnaMF16,Nam13,Ma2012,jing15,Kocaguneli2014,yu2017feature,jamshidi2017transfer,pan2009survey,qing2015cross,li2018cost};
+i.e. what lessons about one kind of project can be transferred
+to another.  To the best of our knowledge,
+the transfer of knowledge (about predictors and plans for project success or failure) has not been previous explored for CSS code.
+There are many reasons for using transfer learning.  Transfer learning can be useful when there is insufficient local data. Clark and Madachy~\cite{clark15} in their study of 65 software under-development by the US Defense Department in 2015 showed developers working in an uncommon area often benefit from transferring knowledge from more common areas.
+
+One way to characterize transfer learning
+methods
+is the approach that it follows.  Firstly, {\em dimensional transformation} methods   manipulate the raw source data until it matches the target. An initial attempt on performing transfer learning with Dimensionality transform was undertaken by Ma et al.~\cite{Ma2012} with an algorithm called transfer naive Bayes (TNB). Since then there are many such algorithms have been proposed such as TCA~\cite{Nam13}, TCA+~\cite{Nam2015}, TPTL~\cite{liu2019two}, and balanced distribution~\cite{xu2019cross} (just to name a few).
+
+
+Secondly, there is another group of algorithms invented by   PI Menzies
+and his student Rahul
+Krishna. According to the Oxford English Dictionary, the bellwether is the leading sheep of a flock, with a bell on its neck, that all other sheep follow.
+A {\em bellwether} method~\cite{krishna2017simpler,krishna16}.
+assumes that within a community of software projects, there is one exemplary project called the {\em bellwether}, which can define predictors for the others. This effect is called {\em the bellwether effect}. They exploit this Bellwether effect in their {\em  bellwether method}  that searches for such an exemplar bellwether project to construct a transfer learner with it. This proposal
+will use the bellwether method since our experiments shows
+that it out-performs dimensionality transform methods~\cite{krishna2017simpler}.
+
+One problem with Krishna's bellwether methods is that the algorithm requires  an $O(N^2)$ comparison of all projects-- which becomes impractical when reasoning about (e.g.) 700 CSS projects~\cite{majumder2019learning}.  To solve that problem, 
+PI Menzies and his student Suvodeep Majumder have added a clustering pre-processor to the bellwether method. In this approach, data from multiple projects is recursively grouped together into a
+tree of clusters and sub-clusters and sub-sub-clusters etc.
+The Bellwether method is applied to each leaf and the best model
+is promoted up one level. Then at each level $i$ of the cluster tree,
+ the bellwether method is applied to applied to all the models promoted up from level $i+1$.  The best model (as found by the bellwether method) is then promoted to level $i-1$.
+ Promotion stops when the level $i$ performs worse
+ than the models found at level $i+1$. In studies with  1,628 non CSS projects,
+ this hierarchically bellwether method returns just six models; i.e. those 1628 projects could be approximated by by six communities (with one model from each community)~\cite{majumder2019learning}.
+ 
+
+
+\textcolor{red}{{\bf Measurable Outcomes:}} In this project, we would repeat the Menzies \& Majumder hierarchical analysis
+on CSS projects. {\bf Goal6} would be called a success if it could be shown that, for many $N$ CSS projects,  the
+benefits seen in {\bf Goals,1,2,3,4,5} could be achieved via a small number of $M$ models 
+($M \ll N$) models.
+
+

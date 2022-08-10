@@ -1,0 +1,1333 @@
+ 
+ 
+% Adversarial HPO
+% \underline{\bf Adversarial HPO} Former studies \cite{ma2020normalized, duesterwald2019exploring} demonstrate that robust DNNs yield the decrease of the generalization performance. Hence, it is  expected a trade-off between the generalization performance and the robustness. How to learn a good balance between multiply objectives is a part of multi-objective optimization problem. Here, considering both hyper-parameters and model parameters are of great importance to the generalization performance and robustness, this proposal aims to optimize the learning of hyper-parameters and model parameters simultaneously. Specifically, the model parameter learning on adversarial samples  to learn good generalization performance and robustness performance, while the model hyper-parameter learning via HPO explores a good parameter setting to guarantee the optimization performance on both generalization ability and robustness of DNNs.
+
+\begin{table}[t]
+    \centering
+    \caption{Deep learning use cases w.r.t data and configurations related to many of the CSIRO's missions.}
+\footnotesize
+%fix the table
+ \begin{threeparttable}
+    \begin{tabular}{llll}
+        \toprule
+        \textbf{Key technologies} &\textbf{Mission related use cases} &  \textbf{Data} & \textbf{Network Architecture}   \\
+        \midrule
+        (a) & Recycling waste classification & RecycleNet~\cite{trashnet} & ResNet+Attention~\cite{RecycleNet_trash_images} \\ 
+        (b) Geospatial data analytics & Vehicle traffic forecasting & Traffic Prediction Dataset & GRU \\
+        (c) & Medical diagnosis & Physionet 2017 dataset~\cite{clifford2017af} & ResNet~\cite{hannun2019cardiologist} \\
+        (d) & Renewable energy prediction & Deep-forecast~\cite{ghaderi2017deepforecast} & DL-STF\tnote{1}~\cite{ghaderi2017deepforecast} \\
+        (e) & Water quality forecasting & Water Quality Data & DualHeadSSIM \\
+        \bottomrule
+        
+    \end{tabular}
+    \begin{tablenotes}
+    \item[1] DL-based Spatio-Temporal Forecasting (DL-STF) denotes the spatio-temporal recurrent neural network in~\cite{ghaderi2017deepforecast}.
+  \end{tablenotes}
+    \end{threeparttable}
+\label{tab:existing}
+\end{table} 
+
+\begin{table}[t]
+    \centering
+    \caption{Various configurations yield performance variance impacting on many of the CSIRO missions}
+\footnotesize
+%fix the table
+ \begin{threeparttable}
+    \begin{tabular}{lllll}
+        \toprule
+        \multirow{2}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{\textbf{Key technologies}} &\multirow{2}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{\textbf{Mission related use cases}} &  \multirow{2}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{\textbf{Data}} & \multicolumn{2}{c}{\textbf{Configurations}}    \\
+        \cmidrule(lr){4-5} 
+        & & & \textbf{Network Architecture} & \textbf{Learning method} \\
+        \midrule
+        \#1 & Image recognition & MNIST~\cite{MNIST} & LeNet5~\cite{lecun1998gradient} & SGD  \\
+        \#2  & Image classification & CIFAR100~\cite{krizhevsky2009learning} & WRN-28-10\tnote{1}~\cite{zagoruyko2016wide} & SGD \\ 
+        \#3 & Recycling waste classification & RecycleNet~\cite{trashnet} & ResNet+Attention~\cite{RecycleNet_trash_images} & SGD \\ 
+        \#4 & Malware detection & BODMAS~\cite{bodmas} & Feed-forward neural network~\cite{harang2020sorel,bodmas} & Adam \\
+        \#5 & Renewable energy prediction & Deep-forecast~\cite{ghaderi2017deepforecast} & DL-STF\tnote{2}~\cite{ghaderi2017deepforecast} & RMSprop \\
+        \#6 & Medical diagnosis & Physionet 2017 dataset~\cite{clifford2017af} & ResNet~\cite{hannun2019cardiologist} & Adam \\
+        \#7 & Video action recognition & UCF101~\cite{soomro2012ucf101} & VGG16+LSTM~\cite{wu2020robustness} & SGD \\
+        \bottomrule
+        
+    \end{tabular}
+    \begin{tablenotes}
+    \item[1] WRN-28-10 denotes the WideResNet where the network depth is 28 and the widening factor is 10. \\
+    \item[2] DL-based Spatio-Temporal Forecasting (DL-STF) denotes the spatio-temporal recurrent neural network in~\cite{ghaderi2017deepforecast}.
+  \end{tablenotes}
+    \end{threeparttable}
+\label{tab:existing}
+\end{table} 
+
+
+\begin{comment}
+
+% In \textbf{GOAL1}, whilst covering all related research works is difficult, we manage to survey the past and latest research efforts on comprehensive factors of model robustness, explanation and certification. Unlike existing methods, our goal is to systematically study the impacts of the data- and configuration-induced factors, which requires a more depth-in understanding of multi-factors learning behaviours. 
+
+% Existing studies covered specific factors DNNs, e.g., CPU multithreading and random seed. 
+% In previous studies, several researchers focus on the impacts of some specific factors, e.g., CPU multithreading and random seed. To mitigate the performance damages due to these unsteady factors, some reliable AI solutions have been proposed from either the data or the model perspective. In addition, considering the low training efficiency of DNNs, some works concentrate on acceleration techniques for speeding up the training process. Finally, robustness verification is critical to evaluate the robustness of DNN models. We will overview recent works from these four aspects, i.e., DNN robustness issue exploration, robustness enhance solutions, training acceleration techniques, and robustness verification.
+% Prior studies have made some efforts to mitigate the robustness issues no matter because of the imperfect data or the configuration variances. In response to the data-level issues, many studies and countermeasures have been explored \cite{tripuraneni2021overparameterization,schneider2020improving,jiang2020robust,dong2021how,jeddi2020learn2perturb}. Tripuraneni \textit{et al.} \cite{tripuraneni2021overparameterization} studied the high-dimensional asymptotics of random regression under covariate shift; Jiang \textit{et al.} \cite{jiang2020robust} leveraged a contrastive learning framework to drive the final model far away from the adversarial samples; Zhang \textit{et al.} \cite{zhang2020familial} studied the ill-effects of weakly-labels for clustering and proposed a new hybrid representation strategy for familial clustering. These recent works provide effective solutions to the imperfect data, but no related deep insights are into how these factors can impact the DNN robustness. In addition, configuration variables relating to software implementation, DL frameworks  and hardware settings, are other important reasons for DNN robustness issues. Xiao \textit{et al.} \cite{xiao2021nondeterministic} studied the impacts of CPU multithreading on DNN systems; Pham \textit{et al.} \cite{pham2020problems} studied the impacts of implementation-level factors by fixing random seeds and the impacts of the whole nondeterminism-introducing factors by setting default identical training runs; Xia \textit{et al.} \cite {xia2022sequential} studied the configurations for a specific dataset and proposed a configuration technique Rapid Optimizing Methods for Estimation (ROME) for the best configuration. These recent works provide clear insights to guide the robustness of DNN models, but they focus on the impacts of configurations from a holistic perspective. This proposal aims to systematically study the impacts of the data- and configuration-induced factors.
+% \textcolor{blue}{Only unsupervised learning can deal with imperfect data. However, there is a performance gap between supervised and unsupervised learning. He \textit{et al.} \cite{he2020momentum} proposed MoCo, a contrastive unsupervised learning framework, that outperforms ImageNet supervised pre-trained and fine-tuned counterpart. Chen \textit{et al.} \cite{chen2020simple} proposed SimCLR that uses data augmentations to present the same data input from different dimensions and a transformation of the representation and the contrastive loss with fine-tuning. It outperforms AlexNet with 100$\times$ fewer labels. Chen \textit{et al.} \cite{chen2020big} added supervised fine-tuning in the circumstance that small fraction of data has labels.}
+
+% \textcolor{cyan}{add paper: 1. Familial Clustering For Weakly-labeled Android Malware Using Hybrid Representation Learning: This paper clusters weakly-labeled data through a hybrid representation learning approach; 2.Perf-AL: Performance Prediction for Configurable Software through Adversarial Learning: This paper uses a small configuration sample to predict software performance through adversarial training; 3. DebtFree: minimizing labeling cost in self-admitted technical debt identification using semi-supervised learning: This paper uses semi-supervised learning and active learning to reduce data labeling effort.; 4. Dazzle: Using Optimized Generative Adversarial Networks to Address Security Data Class Imbalance Issue: The paper proposed a method generating minority class samples to resample the original imbalanced training dataset through optimized generative adversarial networks}
+Among the solutions, adversarial learning is widely studied because of its effective performance. Some recent adversarial learning-based approaches include leveraging a contrastive learning framework to drive the final model far away from the adversarial samples \cite{jiang2020robust}; incorporating the adversarial learning into the self-supervised pre-training process to enhance the pre-trained model directly \cite{chen2020adversarial}; fine-tuning the model by maximizing the mutual information to learn the adversarial samples and retain the training information \cite{dong2021how}; designing a new perturbation-injection module in each network layer and enhancing the robustness through the learning of the uncertainty \cite{jeddi2020learn2perturb}. 
+
+% \textcolor{olive}{The problems of current solutions and our goals}
+
+% These networks cannot be deployed at the inference stage under resource constraint circumstances. In the verification process, the large networks can only be verified by approximate methods. Recent literature shows the approaches to deal with the above drawback. Cai \textit{et al.} \cite{cai2020once} proposed ``Once for All'' that can provide different size of networks for devices with different resource constraints. Wang \textit{et al.} \cite{wang2020apq} proposed ``APQ''. In the ``APQ'', Wang \textit{et al.} jointed network architecture search, pruning, and quantization policy together. ``APQ'' improves the efficiency, reduces latency compared with MobileNetV2+HAQ, and outperforms ProxylessNAS+AMC+HAQ in accuracy.
+
+% \textcolor{blue}{\textbf{Pruning+Quantization}
+% Large neural networks require computational power and time to train. These networks cannot be deployed at the inference stage under resource constraint circumstances. In the verification process, the large networks can only be verified by approximate methods. Recent literature shows the approaches to deal with the above drawback. Cai \textit{et al.} \cite{cai2020once} proposed ``Once for All'' that can provide different size of networks for devices with different resource constraints. Wang \textit{et al.} \cite{wang2020apq} proposed ``APQ''. In the ``APQ'', Wang \textit{et al.} jointed network architecture search, pruning, and quantization policy together. ``APQ'' improves the efficiency, reduces latency compared with MobileNetV2+HAQ, and outperforms ProxylessNAS+AMC+HAQ in accuracy.
+% }
+
+% \textcolor{cyan}{\textbf{parallelism or distributed} To find a fast parallelization strategy, Jia \textit{et al.} \cite{Jia2019ParaforDNN} introduced a execution simulator in FlexFlow for increasing training throughput. Peng \textit{et al.} \cite{Peng2019DNNaccelerate} proposed ``ByteScheduler'' to accelerate distributed DNN training through a generic communication scheduler achieving speedup training.  }
+With the advances in computational power, recent studies on PTMs have shown great success in universal representations. Then, downstream tasks can benefit from these universal representations without training a representation model from scratch. These tasks can roughly be divided into two fields: natural language processing (NLP) and computer vision (CV). In the CV realm, convolutional neural network (CNN) is the main backbone of mainstream large-scale pre-trained models, including U-Net, YOLO, VGG, ResNet, and MobileNet. In contrast, recent pre-trained models for NLP are mainly Transformer-based ones, including BERT, GPT, XLNet, BART, and MASS. 
+Owing to the transfer learning structure,  PTMs enable quicker start and better performance, especially for some specific industries which are 
+restricted to limited labels, such as healthcare \cite{li2021perils,monajatipoor2021berthop,sun2021lesionaware}, self-driving cars, and intelligent question answering \cite{li2021perils,xie2020distant}. 
+
+% 2. Pre-trained models have their own issues relating to robustness
+
+Pre-trained models have shown significant performance on these tasks. Along with it comes the variety of attacks targeting the PTMs, especially after both the CV and NLP have gained tremendous success owing to the PTMs. Common attacks on the PTMs include both white-box attacks and black-box attacks. White-box attacks generate the adversarial samples relying on the gradients of the samples, while black-box attacks produce adversarial samples depending on the generative models. Even worse, deep models, especially the pre-trained ones on big data, are vulnerable to such elaborated adversarial samples.   
+
+% 3. Current solutions to address these issues
+In response to the above, many 
+
+% 4. However, these solutions are unable to XXX
+Prior studies have shown remarkable improvements in the DNN robustness. However, there is a lack of systemic studies on the robustness of deep learning models.
+
+% 5. To overcome the limitations, this proposal's idea
+
+ The global security threat continues to evolve at a rapid pace, with a rising number of types of threats.
+ In the social network realm, Facebook estimated that hackers stole user information from nearly 30 million people through malicious software~\cite{facebookreport}.
+According to the International Data Corporation (IDC), the Android operating system covers around 85\% of the world’s smartphone market. Because of its increasing popularity, Android is drawing the attention of malware developers and cyber-attackers. Android malware families that are popular are spyware, bots, Adware, Potentially Unwanted Applications (PUA), Trojans, and Trojan spyware, which affect millions of Android users~\cite{bhat2019survey}.
+ With the growing reliance on information technology, cybercrime is a serious threat to the economy, military and other industrial sectors~\cite{bissell2019cost,jang2014survey,chang2019evaluating,opderbeck2015cybersecurity,rovskot2020cybercrime}. 
+In 2019, the damage cost caused by malware and cybercrime exceeded a trillion dollars~\cite{morgan2019official}. For example, a March 2019 ransomware attack on aluminum producer Norsk Hydro caused 60 million pounds of remediation cost~\cite{sechel2019comparative}. The attack brought production to a halt at 170 sites around the world. More generally, a 2019 study by Accenture reports that cybercrime will cost US \$5.2 trillion over the next five years~\cite{bissell2019cost} Alarming, that cost is growing.  That same report documents that in the United States, the annual average cost to organization of malicious software has grown 29\% in the last year. 
+
+
+There are many kinds of malicious software.
+{\em Malware}   is a malicious file or hidden within files; e.g. PDF files can carry malicious code~\cite{smith01}.
+{\em Ransomware}  encrypts a victim's files then demands a ransom from the victims to restore access to the data upon payment. For example, a March 2019 ransomware attack on aluminum producer Norsk Hydro caused 60 million pounds of remediation cost. The attack brought production to a halt at 170 sites around the world (some 22,000 computers were affected across 40 different networks)~\cite{sechel2019comparative}. 
+{\em Industrial espionage software} infects, then destroyed industrial machinery; e.g. the Stuxnet virus used to damage centrifuges at Iran’s Natanz uranium enrichment facility~\cite{langner2011stuxnet}.
+Other kinds of malicious software~\cite{monshizadeh2014security} include (a) {\em scareware} that socially engineers anxiety, or the perception of a threat, to manipulate users into e.g. buying unwanted software; (b) {\em adware} that throws advertisements up on your screen (most often within a web browser); and (c)~software that infects your computer then, without your permission of knowledge,   {\em mounts a denial of service attack} on other computers. 
+
+In response to the above,
+security practitioners now routinely add security detectors to their environments, which are machine learning models that utilize known detective patterns to verify whether an application becomes a threat. Such detectors can be built in many ways including (but not restricted to) building a classifier to examine a web page for malicious content~\cite{canali2011prophiler,eshete2012binspect}; constructing multiple classifier systems to classify spam emails~\cite{biggio2010multiple}; building classifiers to detect malicious PDF files~\cite{xu2016automatically};
+applying machine learning to detect Android malware~\cite{grosse2017adversarial}; designing supervised learning algorithm to classify HTTP logs~\cite{liu2017robust}; designing machine learning models to detect ransomware~\cite{munoz2017towards}; and detecting malicious PowerShell commands using deep neural networks~\cite{hendler2018detecting}.
+
+
+ Paradoxically, machine learning also introduces a new attack vector for motivated adversaries\cite{barreno2006can,DBLP:journals/pr/BiggioR18}.   \textit{Adversarial machine learning}  is a technique that attempts to fool or misguide a machine learning-based model with malicious inputs
+ (for a sample of these methods, see  Table~\ref{attacks})
+This technique was
+first studied in spam filtering~\cite{dalvi2004adversarial,lowd2005adversarial,lowd2005good} and later on since 2014, Szegedy et al.~\cite{szegedy2013intriguing} found that small perturbations in images can cause misclassification in neural
+network classifiers. This technique is also widely studied in the security domain. \textit{Adversarial evasion attack}~\cite{biggio2013evasion} is one of the most prevalent types of adversarial machine learning attacks that happens during the testing stage in the machine learning pipeline. In this attack, attackers try to evade the detection system by manipulating the testing data, resulting in a wrong model classification. The core of adversarial evasion attack is that when an attacker can fool a classifier to think that a malicious input (e.g., malicious Android application or network traffic) is actually benign, they can render a machine learning-based malware detector or intrusion detector ineffective.
+
+
+\begin{table}[!t]
+
+\begin{tabular}{p{.98\textwidth}} 
+
+\rowcolor[HTML]{ECF4FF}
+\small\textit{\textbf{Fast Gradient Sign Method (FGSM)}}~\cite{DBLP:journals/corr/GoodfellowSS14} is a method to that learns the region of making loss (classifier error) by studying the gradient changes 
+found in a model after from minor perturbations to the data.
+\\
+\small\textit{\textbf{Basic Iterative Method (BIM)}}~\cite{KurakinGB17a}   iteratives over  FGSM, adding a small perturbation at  each iteration.   BIM-A       iterating once a   mislcassification is achieved.   BIM-B   
+stops after a fixed number of rounds.
+\\
+\rowcolor[HTML]{ECF4FF}
+\small\textit{\textbf{Jacobian-based Saliency Map (JSMA)}}~\cite{papernot2016limitations}  uses feature selection with the aim of minimizing the number of features perturbed (i.e., the $L_{0}$ distance metric) before a misclassification is achieved.
+\\
+\small\textit{\textbf{DeepFool}}~\cite{moosavi2016deepfool} works iterative to  minimizing the   distance between perturbed   and original data (i.e., the $L_{2}$ distance metric).   Adversarial
+examples are generated via a linear approximation of the decision boundary that  different classes, and then adding a perturbation perpendicular to that decision boundary, which brings the input closest to a linear approximation of the decision boundary.  
+\\
+\rowcolor[HTML]{ECF4FF}
+\small\textit{\textbf{Carlini-Wagner (C \& W)}} attack~\cite{carlini2017towards,DBLP:conf/ccs/Carlini017} is an optimization tactic that seeks the smallest noise  added to input $x$ that   changes the classification to a class $t$ (in our case, from malicious to benign).
+\end{tabular}
+\caption{Examples of adversial attack methods.}\label{attacks}
+\end{table}
+
+
+Prior studies have tried~\cite{DBLP:conf/iclr/TramerKPGBM18,smutz2016tree,kantchelian2016evasion} to thwart evasion attacks by building a more robust and complex model via \textit{ensemble learning}~\cite{dietterich2002ensemble}. Ensemble learning is the process of (a)~building multiple models and then (b)~polling across the models to arrive at a final decision. 
+For example, Biggio et. al.~\cite{biggio2010multiple} investigated ways to build a multiple classifier system (MCS) that improved the robustness of linear classifiers. Tramer et. al.~\cite{DBLP:conf/iclr/TramerKPGBM18} introduced a technique called ensemble adversarial training that augments training data with perturbations transferred from other models to increase robustness. Kariyappa et. al.~\cite{kariyappa2019improving} showed that an ensemble of models with misaligned loss gradients is an  effectively defence mechanism.
+
+
+In theory, ensemble learning defend against adversarial evasion attack since attackers have to craft payloads (i.e., adversarial examples) that are able to subvert all constituent models at once.
+However, some  studies~\cite{zhang2020decision,zhang2018gradient,he2017adversarial,DBLP:conf/iclr/TramerKPGBM18,DBLP:journals/corr/PapernotMG16} caution that adversaries can still defeat ensemble-based strategy. For example, Papernot et al.~\cite{DBLP:journals/corr/PapernotMG16} find that, even when ensemble classifiers are used, adversarial attackers can still manage to use their own models to find ways to ``transfer'' the adversarial examples to a victim model (i.e., attacker's target model), even if (a)~the adversary has little knowledge of the victim model; and even if (b)~the defender uses an ensemble of classifiers.
+
+Why do ensembles fail to defend against attackers? Once issue is that  when ensemble learning combines conclusions from ensemble methods, that ``voting'' process trends to conclusions that approximate
+  the median decision boundary between classifiers. Hence, some researchers
+report that  ensemble learning may not be an adequate defense against attackers~\cite{zhang2020decision,zhang2018gradient,he2017adversarial,DBLP:conf/iclr/TramerKPGBM18,DBLP:journals/corr/PapernotMG16}. For example, Zhang et al.~\cite{zhang2020decision} show that a discrete-valued tree ensemble classifier can be easily evaded by adversarial inputs manipulated based only on the model decision outputs.  Papernot et al.~\cite{DBLP:journals/corr/PapernotMG16} find the transferability property of adversarial examples  (where two different learners working on the same data generate the same decision boundary) also make ensemble classifier less effective. 
+
+
+Can we build ensembles in a different manner, making them better suited to adversarial defence? Perhaps so, and we some evidence that supports
+that conjecture.
+(see the results from the OMNI-1 research  in
+ Figure~\ref{fig:contagio_distance} of page~\pageref{fig:contagio_distance} of this proposal).
+ We began working on   OMNI after observing that
+{\em 
+prior work on ensemble learning against adversarial evasion attack barely explored the vast range of configurations available within a model or explored few different models. }
+As shown in Table~\ref{tbl:hyperparameters}, 
+malware or intrusion detection models can be built from a space of trillions of configurations (i.e., hyperparameter choices of a model). 
+Yet   researchers build their ensemble-based approaches using a small number of constitute models; e.g., Kantchelian et al.~\cite{kantchelian2016evasion} use seven constitute models in their ensemble classifier. Strauss et al.~\cite{strauss2017ensemble} use an ensemble of ten classifier as the defense strategy against adversarial perturbations.
+Hence it is possible that we can  
+\underline{\bf defeat adversaries by building defences  
+    from a   very large set of possible  configurations.}
+ 
+
+Another concern we had with prior work was
+that   
+the smoothing out of individual variations
+(via ensemble voting) can make a decision boundary smoother, and hence easier to predict (and attack). 
+An alternate approach, used by OMNI is to   {\bf not}
+to average across a collection of learners but, instead
+\underline{\bf defeat adversaries  by selecting  defenders from the corners of a   very large set of possible  configurations}. 
+ 
+\end{comment}
+
+
+%In this section, we will elaborate on these four components. The resulting model is finally certified in a quantitative measurement. 
+
+%In \textbf{Goal 1}, the training data with the training parameters is initially trained a model, in which would be systematically enumerated the robustness issues of deep neural networks by considering the full development of deep networks. We will investigate the software-aware, hardware-aware, and database-aware issues to comprehensively distinct the robustness issues, hence significantly maximizing the analysis scope. In \textbf{Goal 2}, the input data comprises the limited and less diversified training samples together with a large number of unlabelled data. We will harvest our training data using a new contrastive active learning approach to select unlabelled samples with distinctive features. This enables automatic or fast semi-automatic labelling, hence significantly reducing manual labelling costs and improving data quality and quantity. Our novelty lies in generating the learner specifically guided by the model issues. In \textbf{Goal 3}, we refine the original networks model with the hybrid issues-driven requirements, diversified data and dynamic optimization strategies. The newly generated light-weight model would fully represent the functions of original model as well as preserve the similar verification accuracy. To be noted that, the optimization process benefits from the feedback knowledge from the robustness evaluation process in \textbf{Goal 4}. To be more specific, the feedback knowledge will iteratively make up the deficiency of the optimization strategies till meeting the requirements of the certification. The resulting model is finally certified in a quantitative measurement. 
+
+
+% To be more specifically, we will study the randomness and vulnerability of the DNNs from five aspects: 
+% \small\textit{\textbf{Study the robustness issues of deep neural networks}}
+% % Below is a newer version of GOAL1. when deleting the subsection, plese remove it to the main body. (2022-06-26-Sunjk)
+%   These are other factors to study in this proposal. 
+
+
+
+% ------
+\begin{comment}
+\begin{table}[!t]
+\centering
+
+\footnotesize
+\begin{threeparttable}
+\begin{tabular}{|r@{~:~}l|} 
+\hline
+\rowcolor[HTML]{ECF4FF} \textbf{Hyperparameter} & \multicolumn{1}{l|}{\cellcolor[HTML]{ECF4FF}\textbf{Ranges}} \\ \ 
+\begin{tabular}[c]{@{}c@{}}Hidden layer  activation function\end{tabular} & \begin{tabular}[c]{@{}l@{}}elu, relu, selu, sigmoid, softmax, tanh, hard\_sigmoid, softplus,    softsign,  linear, exponential\end{tabular} \\  
+\begin{tabular}[c]{@{}c@{}}Output layer  activation function\end{tabular} & \begin{tabular}[c]{@{}l@{}}elu, relu, selu, sigmoid, softmax, tanh, hard\_sigmoid, softplus, softsign,  linear, exponential\end{tabular} \\  
+First layer dense & quniform(30, 150, 1) \\  
+Second layer dense & quniform(30, 50, 1) \\  
+Third layer dense & quniform(10, 32, 1) \\  
+Drop out rate & uniform(0.0, 0.5) \\  
+Optimizer & \begin{tabular}[c]{@{}l@{}}Adadelta, Adagrad, Adam, Adamax,   NAdam, RMSprop, SGD\end{tabular} \\  
+Batch size & 16, 32, 64, 128 \\ 
+Number of epochs & quniform(5, 20, 1) \\  
+Learning rate & 0.001, 0.01, 0.1 \\ \hline
+\end{tabular}
+\begin{tablenotes}
+    %   \small
+\item  \textbf{quniform($low$, $high$, $q$)} means $round(uniform(low, high)/q) * q$. \textbf{uniform($low$, $high$)} returns a value uniformly from $low$ to $high$.
+% \item * Note-2: We do not optimize the number of hidden layers but use 3 layers in our study, since we observe that they are enough for us to make good predictions and speed up the training process.
+\end{tablenotes}
+\end{threeparttable}
+\caption{Prior explorations of
+the hyperparameters of adversarial defenders  explored just dozens to hundreds of possibilities. This barely scratches the  surface of the large space of possible hyper-parameter options. For example,
+here are the hyperparameters for a   deep neural networks Assuming the drop out rate is divided into 100 options, then this table shows around $10^{13}$ options: 
+$11*11*120*20*22*100*7*4*15*3$.}
+\label{tbl:hyperparameters}
+\end{table}
+
+ 
+The last section suggested that we can build better adversarial defences by working across   very large set of very different learners.
+One  way to generate a very large space of different learners is via  
+  automatic hyperparameter configuration.
+{\em Hyperparameter optimizers} are algorithms that   seek the control
+settings of a  machine learning algorithm that most improves its performance.  In a machine learning algorithm, hyperparameters are properties that control the behaviors of the machine learning algorithms. For example, when reasoning about ``$k$-nearest neighbors'', the hyperparameter ``$k$'' decides how many neighbors to use for making a decision. And when reasoning about
+configuration parameters for a learner designed
+to detect adversarial input, the hyperparameters
+might be the control parameters of
+a deep learner  seen in
+Table~\ref{tbl:hyperparameters}.
+
+
+\begin{wraptable}{r}{2.5in}
+\centering
+\footnotesize
+\begin{tabular}{|rcc|}\hline
+\rowcolor[HTML]{ECF4FF} &Metrics   & Definition                                    \\  
+$y_1$=&Accuray   & (TP$+$TN)$/$(TP$+$TN$+$FP$+$FN)                         \\ 
+$y_2$=&Precision & TP$/$(TP$+$FP)                                    \\ 
+$y_3$=&Recall    & TP$/$(TP$+$FN)                                    \\  
+$y_4$=&False Alarm &TN$/$(TN$+$FN)\\
+$y_i=$& etc. &\\
+\hline
+\end{tabular}
+\caption{Objectives based on true negatives (TN), false negatives (FN), true positives (TP) and false positives (FP).}\label{tab:metrics2}
+\end{wraptable}
+
+There are many hyperparameter optimization
+techniques such as (a)~genetic algorithms
+that mutate a population across many generations
+to find good solutions~\cite{goldberg1988genetic};
+(b)~differential evolution~\cite{price2006differential};
+(c)~various reinforcement learning schemes~\cite{MAZYAVKINA2021105400};
+(d)~Bayesian parameter optimization algorithms
+such as Hyperopt~\cite{bergstra2012random}
+or SMAC~\cite{Hutter11} that reflect
+on small models built so far in order to select
+what to test next;
+(e)~PI Menzies' geometric learning schemes that
+reflect over the shape of the example seen so far in order
+to decide where to sample next~\cite{chen18}; and many more.
+
+ 
+OMNI extends standard hyperparameter optimization with some 
+{\bf {\em multi-objective geometry tricks}}. 
+To understand these tricks, we first have to discuss the {\em twin spaces} of optimization shown in Figure~\ref{moo}.
+When optimizing some function \[y_1,y_2,...\;=\;f(x_1,x_2,x_3,....)\]
+the independent $x_i$ variables are the things we alter and the
+dependent $y_i$ variables are the effects associated
+with those alterations. For example, if hyperparameter settings from an adversarial
+defender are the  
+the $x_i$ variables then  the $y_i$ variables could be the performance
+scores seen when that learner is deployed as an adversarial defender (see  Table~\ref{tab:metrics2}).
+
+\begin{figure}[!t]
+\caption{In this multi-objective optimization
+problem $y=f(x)$ and the best models are those that result in (e.g.)
+low false alarms and high recalls (i.e. the top-left region of the right-hand-side
+objective space). Similar decisions
+usually have similar   objective scores (see   purple and brown points). But sometimes, similar objective scores arise from very different decisions
+(see the orange points).   }\label{moo}
+\begin{center} \includegraphics[width=4in]{fig/yfx.png}\end{center}
+\end{figure}
+In the usual case, similar $x$ decisions lead to similar $y$ results (see the brown and purple points of Figure~\ref{moo}). But sometimes,
+as shown in   orange  in Figure~\ref{moo}, very different $x$ decisions 
+lead to the same $y$ values.  This suggests the following tactic:
+\bi
+\item
+
+In our whitebox scenarios, attackers and defenders   access   the same examples and know the range of parameters available to the defender's learners.
+In this case, attackers might   explore a range of configurations 
+to find the best one-- which we   marked as ``Expected" in  Figure~\ref{moo}
+(this configuration is ``best'' and ``Expected" since it has lowest false alarms and
+most recall).
+\item
+
+But also in Figure~\ref{moo}, we can see that very close to ``Expected'' is an 
+{\bf {\em nearly-optimal}},  but {\bf {\em unexpectedly different}} configuration
+which we have marked as ``Unexpected''. We say it is unexpectedly different 
+since it comes from a very
+different part of the decision space to the expected configuration.
+\item
+If the  attacker  tries to confuse the ``Expected'' configuration, but the defender
+is using the ``Unexpected'' configuration then, as seen with OMNI-1, that  attack can fail.
+\item
+Further, if the defender learns a large cache of nearly optimal but unexpectedly
+different configurations, then switches randomly between them for each new input,
+then, theoretically, that could exhaust the defender's ability to design inputs that
+confuse that large space of defenders. OMNI-2 will explore this possibility.
+\ei
+(Aside: this all    assumes   samplings of different configurations
+do not converge to the same decision boundary-- hence {\bf GOAL5},
+listed on page~1). 
+
+We say that a configuration is:\label{definititions}
+
+% \begin{table}
+% \caption{Results from the \mbox{OMNI-1} prototype. From~\cite{XXX}.}
+% \begin{tabular}{|p{.98\linewidth}|}
+
+
+
+\bi
+\item
+{\bf {\em Nearly-optimal}} if its
+$\Delta{y}$ distance to the ``Expected'' configuration is 
+{\em small}
+\item
+{\bf {\em Unexpectedly different}}
+if its $\Delta{x}$ distance to the ``Expected'' configuration is 
+{\em large} 
+\ei
+(where $\Delta{y}$ is computed across the objective space and $\Delta{x}$
+is computed across the decision space).
+
+To operationalize {\bf {\em nearly-optimal}},  but {\bf {\em unexpectedly different}}, \mbox{OMNI}   needs a distance function that works in decision or objective space. While objective space values are all numeric, decision space variables
+might be discrete (e.g. some policy setting {\em true} or {\em false} denotes enabling some feature of a learner). 
+The 
+\textit{Gower distance}~\cite{gower1971general} of
+Equation~\ref{eqgow} is a distance measure   for such heterogeneous spaces:
+
+\begin{center}
+{\small
+\begin{minipage}{.25\linewidth}
+{\small \begin{equation}\label{eqgow}
+    d(i,j) = \frac{\sum_{k=1}^{N} w_{ij}^{(k)}d_{ij}^{(k)}}{\sum_{k=1}^{N} w_{ij}^{(k)}}
+\end{equation}}
+\end{minipage}\hspace{.7cm}\begin{minipage}{.25\linewidth}
+\begin{equation}\label{eqcat}
+    d_{ij}^{(k)} =  
+    \begin{cases}
+    1, & \text{if} \: x_{i}^{(k)} \neq x_{j}^{(k)}\\
+    0, & \text{if} \: x_{i}^{(k)} = x_{j}^{(k)}
+    \end{cases}
+\end{equation}  
+\end{minipage}\hspace{.7cm}\begin{minipage}{.3\linewidth}
+\begin{equation}\label{eqnum}
+    d_{ij}^{(k)} = \frac{|x_{i}^{(k)} - x_{j}^{(k)}|}{max(x^{(k)}) - min(x^{(k)})}
+\end{equation}\end{minipage}}
+\end{center}
+Here, $w_{ij}^{(k)}$ is the weight of variable $k$ between observation $i$ and $j$ and $d_{ij}^{(k)}$ is the distance between $i$ and $j$ on variable $k$. Moreover, $d_{ij}^{(k)}$ applies different formulas to categorical and numerical variables.
+In Equation~\ref{eqcat},
+  if two categorical observations are the same then the distance $d_{ij}^{(k)}$ of them is assigned $0$, otherwise assigned $1$.
+  In Equation~\ref{eqnum},
+  For numerical variable, the absolute difference is calculated between observation $i$ and $j$, then the result is scaled to range $[0,1]$ by dividing the range of values of variable $k$.  Note that, in both equations,  
+ all these distances $d_{ij}$ are normalized 0..1 for min..max.
+
+
+ Equation~\ref{eqgow} lets us test the core assumption of  OMNI\footnote{
+ As stated on the last page, the core assumption of OMNI is effective
+defenders against adversarial attacks can be built from 
+configurations that {\bf maximizes} the $\Delta{x}$ distance
+(to the ``Expected'' configuration)
+while {\bf minimizing} the 
+  $\Delta{y}$ distance.}. Figure~\ref{fig:contagio_distance} show post-attack classification accuracies (for recognizing ``malicious'' attacks)  using \mbox{OMNI-1} using an    ensemble built from  $\Delta{y}\le 0.05$ 
+  and $\Delta{x}\in \{0.1, 0.3. 0.5, 0.7, 0.9\}$.
+  Note that   
+  across all six adversarial method studied here,
+  the larger the  $\Delta{x}$, the greater the post-attack accuracy.   The improvement can be very striking.
+  E.g. for BIM-A, \mbox{OMNI-1} triples the post-attack accuracy. 
+
+
+\begin{figure}[!t]
+\caption{\mbox{OMNI-1} post-attack classification \textit{accuracy} (\%) seen on the Contagio PDF
+data set seen for 
+$\Delta{x}\in \{0.1, 0.3. 0.5, 0.7, 0.9\}$ (see the x-axis). 
+For details on this data set, see Table~\ref{data}.
+For details on the attack methods, see Table~\ref{attacks}. 
+For a definition of accuracy (on the y-axis),
+see Table~\ref{tab:metrics2}.
+These results are median values seen when 
+the data was  as split  five times into   80\% (for   training and   optimization) and 20\% for final model testing.
+The training set was    further split with ratio 3:1
+where our hyperparameter optimizer trained with the former part (75\%), and then evaluated in the latter part (25\%). While this figure shows results from one data sets,
+recent work~\cite{shu2020omni}  sows that the   pattern seen here (that increasing $\Delta{x}$ improves post attack accuracies) also occurs in all the data sets of Table~\ref{data}. }\label{fig:contagio_distance}
+\centering
+\includegraphics[width=11cm]{fig/contagio_distance.png}
+
+\end{figure}
+
+ 
+
+
+Recently~\cite{shu2020omni}, PI Menzies and his former graduate student Dr. Shu have repeated the analysis of
+ Figure~\ref{fig:contagio_distance}
+ across all the data sets of Table~\ref{data}
+ and all the adversarial attack methods
+of  Table~\ref{attacks}.
+In a result endorsing the core
+assumption of this proposal,
+across all those data sets and across all those attack methods, the effect is the same; i.e.    increasing the diversity of the ensemble
+methods (i.e. increasing
+$\Delta{y}$) also increases the post-attack accuracy.  
+
+\newpage
+\noindent As seen in Table~\ref{tbl:contagioAccuracy},  Menzies and Shu have also compared OMNI-1  to other defense strategies:
+\bi
+\item[{\bf R1:}]  Do nothing;
+\item[{\bf R2:}]  A basic ``adversarial training''
+method~\cite{DBLP:conf/iclr/TramerKPGBM18,DBLP:conf/iclr/NaKM18,DBLP:conf/iclr/MadryMSTV18,DBLP:conf/iclr/FarniaZT19};
+\item[{\bf R3:}] 
+Building an ensemble from random members of the final population of ``good'' configurations found by 
+Bergstra
+Hyperopt/TPE algorithm~\cite{Bergstra:2012}, but 
+with no consideration on $\Delta{x}$;
+\item[{\bf R4:}] A cut down version of OMNI-1.
+that neglects to weigh ensemble members
+according to the known performance of
+that member;
+\item[{\bf R5:}]  Full OMINI-1.
+\ei
+
+ 
+\begin{table}[!b]
+\small
+
+\begin{tabular}{|p{1.5cm}|p{1.5cm}|p{2cm}|p{2cm}|p{2cm}|p{2.5cm}|p{2cm}|p{2cm}}
+\cline{3-7}
+\multicolumn{2}{c}{~}&\multicolumn{5}{|c|}{Post-attach accuracy after using   $R1,R2,R3,R4,R5$  }\\ 
+\multicolumn{2}{c}{~}&\multicolumn{5}{|c|}{to defend against the attacks shown in column one.}\\\cline{2-7}
+\multicolumn{1}{p{1.4cm}|}{
+~\newline
+~\newline~\newline
+Attack }& $R0$:\newline Pre-attack  defender accuracy& {\bf R1}: \newline Attack impact (no defense)&
+{\bf R2}: \newline Basic\newline defense & 
+{\bf R3}:\newline Standard \newline  ensembles & 
+{\bf R4}: \newline \mbox{OMNI-1} minus \newline   ensemble weights & 
+{\bf R5}: \newline \mbox{OMNI-1}\newline \\\hline
+BIM-A    &\multirow{6}{*}{~~~~~~~93}& 14 & 55 & 23 & 51 & \textbf{59} \\ \cline{1-1}\cline{3-7}
+BIM-B    && 36 & 61 & 37 & 53 & \textbf{65} \\ \cline{1-1}\cline{3-7}
+FGSM     && 38 & 59 & 34 & 58 & \textbf{70} \\ \cline{1-1}\cline{3-7}
+C\&W     && 55 & 66 & 46 & 65 & \textbf{74} \\ \cline{1-1}\cline{3-7}
+JSMA     && 63 & 73 & 57 & 70 & \textbf{76} \\ \cline{1-1}\cline{3-7}
+DeepFool && 67 & 71 & 55 & 73 & \textbf{87} \\\hline
+\multicolumn{7}{|p{.95\linewidth}|}{}\\
+\multicolumn{7}{|p{\linewidth}|}{
+This figure shows
+ six treatments.}\\
+\rowcolor[HTML]{ECF4FF}\multicolumn{7}{|p{\linewidth}|}{
+ {\bf   R0}: {\em Baseline}:  This baseline treatment
+ reports how well a machine learner (i.e., neural networks) can classify known prior attacks as "benign" or "malicious".} \\
+\multicolumn{7}{|p{.95\linewidth}|}{{\bf R1}: {\em Do nothing}:  Impact of   adversarial attack on the efficacy of
+ the defending machine learner.}\\
+\rowcolor[HTML]{ECF4FF}\multicolumn{7}{|p{\linewidth}|}{
+{\bf R2}: {\em Basic defence}: 
+This treatment shows the results of simple
+anti-adversarial machine learner. 
+With ``adversarial training'', the trained models are expected to learn some traits of existing adversarial examples in order to make better predictions on new adversarial examples~\cite{DBLP:conf/iclr/TramerKPGBM18,DBLP:conf/iclr/NaKM18,DBLP:conf/iclr/MadryMSTV18,DBLP:conf/iclr/FarniaZT19}.   For   each type of adversarial attack, we generate ``adversarial examples'' with attack control set $S_1$ on a portion of testing datasets, then we aggregate training datasets with created adversarial examples. We then perform same type of adversarial attack with adversarial examples generated with attack parameter set $S_2$ while $S_1 \neq S_2$. }\\
+\multicolumn{7}{|p{\linewidth}|}{{\bf R3}:    In {\em standard ensembles}, 
+the defender is an ensemble classifier constructed
+from random members of the final population of
+learners optimized via Hyperopt/TPE.
+Unlike OMNI, this ensemble dos not apply the
+$\Delta{x}$  distance criteria. Adversarial attacks are applied to the ensemble classifier.}\\
+\rowcolor[HTML]{ECF4FF}\multicolumn{7}{|p{\linewidth}|}{
+ {\bf  R4}: {\em OMNI-1}, minus: This
+treatment applies a cut-down version of full OMNI
+that selects the ensemble using $\Delta{y}\le 0.05$ 
+  and $\Delta{x}\ge 0.9$, but then does
+  not tune the weights assigned to each member of that ensemble.}\\
+\multicolumn{7}{|p{\linewidth}|}{{\bf R5}: {\em Full \mbox{OMNI-1}}:  Post-attack classification accuracy using
+  the \mbox{OMNI-1} defense tactics  with $\Delta{y}\le 0.05$ 
+  and $\Delta{x}\ge 0.9$.}
+ \\\hline
+\end{tabular}
+\caption{Classification \textit{accuracy} (\%) on adversarial examples of dataset Contagio PDF. For details on this data set, see Table~\ref{data}.
+For details on the attackers, see Table~\ref{attacks}.
+While this figure shows results from one data sets,
+recent work~\cite{shu2020omni}  sows that the   pattern seen here (that for many attack strategoes OMIN performs better than standard ensembles) also occurs in all the data sets of Table~\ref{data}.
+}\label{tbl:contagioAccuracy}
+\end{table}
+
+
+Table~\ref{tbl:contagioAccuracy} shows results for one data set (Contagio PDF). PI Menzies and Dr.Shu have repeated the analysis of this table for all the other data sets
+of Table~\ref{data}. In all those results:
+\bi
+\item The pre-attack defense accuracies for distinguishing benign from malicious   was    high (90\% or more);
+\item Post-attack, with no defenses, the defenders found it harder to recognise malicious attacks;
+\item As other defenses, post-attack it can be observed that OMNI-1 obtained best results (of the method explored here, including the use of standard ensemble methods.
+\ei
+
+\end{comment}
+
+
+
+% This proposal mainly study the robustness issues of deep neural networks on two common scenarios: covariate shift and adversarial attacks. 
+
+% % TODO: reference for the speech recognition dataset
+% \small\textit{\textbf{Covariate shift:}} In most supervised deep learning scenarios, the training data and inference data are assumed with the identical distribution. However, covariate shift is extremely common in real scenarios, especially for long-term running systems. Assuming training data with probability density $p_T: \mathcal{X} \times \mathcal{Y} \rightarrow \mathbb{N}$ and inference data with probability density $p_I: \mathcal{X} \times \mathcal{Y} \rightarrow \mathbb{N}$, then $p_T(x,y) = p_T(x)p_T(y|x)$ and $p_I(x,y) = p_I(x)p_I(y|x)$ where $x\in\mathcal{X}$ and $y\in\mathcal{Y}$. Covariate shift occurs when $p_T(y|x) = p_I(y|x)$ and $p_T(x) \neq p_I(x)$ are satisfied. Considering the reasons of covariate shift is always unresistible, we collect several representative scenarios to identify the roubustness of DNN models. The scenarios include malware detection \cite{yang2021bodmas}, speech recognition \cite{}.
+
+% \small\textit{\textbf{Adversarial attack:}} With the advances in DNNs, adversarial attacks targeting these DNNs emerge rapidly. Assuming dataset with probability density $p_D: \mathcal{X} \times \mathcal{Y} \rightarrow \mathbb{N}$, then the objective of the adversarial attacks can be defined as $\max_{\delta}L(x+\delta,y)$ where $\delta$ is generated via the specific attack strategy and $L$ denotes the loss from the DNN structure \cite{madry2018deep}. Compared with covariate shift, both $p_D(y|x) = p_A(y|x)$ and $p_D(x) = p_A(x)$ are not satisfied where $p_A(\cdot)$ denotes the probability from the adversarial samples. In addition, covariate shift always occurs between the training set and the inference data, while adversarial attacks can be imposed on pre-training phase, fine-tuning phase, and inference phase. Considering several factors, including attack types, the number of adversarial samples, and attack phases, have different influences on the DNN robustness. We will conduct a systematic analysis of the DNN robustness from these aspects.
+
+% % -----original Doc start-----
+% % How to study the covariate shift problem?
+% % Here, to identify the robustness of DNNs, covariate shift-related XXXX. 
+
+% Then, we aim to study the adversarial sensitivity of the DNNs. Specifically, we will systematically study the impacts of adversarial attack types, adversarial sample ratios, and the affected phase of the attacks. 
+
+% The attack types include both white-box attacks and black-box attacks. Main white-box attacks in this proposal include:
+% \bi
+% \item Fast Gradient Sign Method  (FGSM) \cite{goodfellow2015explaining}: FGSM proposed a fast adversarial sample generation method by calculating the gradients of input samples and modifying the samples with a bit of perturbation in the gradient direction.
+% \item Projected Gradient Descent (PGD) \cite{madry2018deep}: PGD is a multi-step variant of FGSM and extends FGSM to a universal first-order adversarial attack.
+% \item  Bit Gradient Ascent (BGA) \cite{al-dujaili2018adversariala}: Considering binary indicator vectors are the common feature representation in malware detection, BGA proposes a bit version of FGSM attack and extent it into the discrete domain.
+% \item Elastic-net Attacks against DNNs (EAD) \cite{chen2018ead}: 
+% EAD combines the C$\&$W attacks and Elastic-net regularization to improve the attack transferability.
+% \ei
+
+% Additionally, there are two more current mainstream black-box attacks: MalGAN and E-MalGAN.
+
+% As for the adversarial sample ratios, considering both the number of the adversarial samples and the sample categories are essential factors for the model performance, we intend to conduct the corresponding studies in two ways. Firstly, the original dataset is mixed into different ratios of adversarial samples, including 20\%, 40\%, 60\%, 80\%, 100\% and 200\%. Then, we will conduct the related studies about the adversarial samples only on the ``hard classes''.
+
+% Furthermore, considering all the phases in the DNN are the potential targets of adversarial attacks, we intend to conduct a systematical analysis on the impacts of the attack phases. More specifically, the impacts of the adversarial attacks on the pre-training phase, fine-tuning phase, and inference phase will be studied.
+
+% % multi-modal pre-trained models?
+
+% In any case, when successful, the conclusions in \textbf{GOAL1} will drive the design of the adversarial learning in \textbf{GOAL2} and the clustering and pruning techniques in \textbf{GOAL3}.
+
+
+% While DNNs performed well on a majority of malchine learning problems, 
+% While OMNI-1's ensembles performed better than standard ensembles, looking at the R0 and {\bf R5} columns of Table~\ref{tbl:contagioAccuracy}, we can see that even with OMNI-1, there is a large gap between the pre-attack baseline and best post-attack performance. 
+% In the case of Table~\ref{tbl:contagioAccuracy}, the pre-attack accuracy was 93\% yet the best we could achieve (with OMNI-1) was 72 to 87\% (median to max).
+% Similar large reductions were seen in all the other experiments with the data of Table~\ref{data}~\cite{shu2020omni}.
+% Hence, {\bf GOAL1} of this proposal: improve the post-attack performance\footnote{For completeness sake, as an aside,
+% we point out that while we can {\em decrease} this gap, we should not expect that we can {\em remove} it entirely.
+% Using  
+% probably approximately correct (PAC) learning theory~\cite{valiant84},
+% Khasawneh et al.~\cite{khasawneh2017rhmd}  argue that  ``using low-accuracy but high-diversity classifiers allow the defender to induce a higher error rate on the attacker, but will also degrade the baseline performance against the target''.
+% To say that another way, they argue that any adversarial defense is mathematically required to lose predictive accuracy as it struggles to respond to an attack.    That said, the issue is how much we can best mitigate that loss. Hence, {\bf GOAL1}.}.
+
+% There are many ways that this gap could be reduced. OMNI-1 only explored one neural net architecture and there are many other types of machine learning models include random forests~\cite{breiman2001random}, support vector machines~\cite{hearst1998support}, etc. Also, from the above description of OMNI-1, we can
+% see many under-explored aspects of that system. For example:
+% \bi
+% \item  
+% The Gower distance (recall Equation~\ref{eqgow}) allows a weight $w_{ijk}$ assigned to each individual variable base on the importance of that variable in the distance calculation.   \mbox{OMNI-1} used $w_{ijk}=1$, which is
+%  something that \mbox{OMNI-2} hopes to improve on (perhaps using some tuning or stochastic gradient descent).  
+%   \item OMNI is an ensemble learning. Ensembles make decisions by voting across
+%   the different learners in an ensemble.
+%   Within the voting process itself, there are many variants that could be applied such as bagging, boosting and
+% stacking, negative correlation based deep ensemble models, explicit/implicit ensembles, homogeneous/heterogeneous ensemble, decision fusion strategies, unsupervised, semi-supervised, reinforcement learning and online/incremental, multilabel based deep ensemble model~\cite{ganaie2021ensemble}. Some of these are supervised methods (e.g. boosting) in which case they may be of limited value (since it often it may not be known if a cargo is malicious till sometime after the learning process). On the other hand, some of these voting strategies  are unsupervised
+% methods that (e.g.)
+% reflect on the changing patterns of weights within a deep learner to decide where best to draw the next conclusions.
+%  \item \mbox{OMNI-1} built its ensembles using all configurations satisfying  $\Delta{y}\le 0.05$ 
+%   and $\Delta{x}\ge 0.9$. There are many possible variants of that process. For example, we could  adjust the $\Delta{y}$ and/or $\Delta{x}$ thresholds.
+%   Also, inspired by the decomposition research into MOEA/D~\cite{zhang2007moea}, we think it plausible
+%   that:
+%   \bi
+%   \item
+%   Given a set of nearly optimum but unexpectedly different configurations $C_1,C_2,C_3,...$ etc, then...
+%   \item ... better
+%   results would be obtained by voting only across subsets of similar configurations  optimum
+
+%   \ei
+% \ei
+% \label{g1} Further to the last point, one way to increase OMNI's defense capabilities is to constantly change its decision boundaries.
+% One
+% way to do that is to use random subsets  of the configurations.  This ``take a random subset'' approach would have to be tested
+% carefully:
+% \be
+% \item
+% In theory, it might be a better defense strategy, 
+% assuming that different subsets do not converge to the same decision boundary: see {\bf GOAL5};
+% \item
+% But also, it could lead to worse predictive performance since fewer ensemble members are voting on the conclusion.
+% \ee
+% Hence, as part of {\bf GOAL1}, we would need to carefully watch for these two effects.
+
+% In any case, when successful, our better design for OMNI-2's learners will decrease the gap between the pre-attack baseline and post-attack performance.
+
+
+% \subsection{GOAL2: Test and detect robustness issues in single-modal and multi-modal pre-trained models \label{4.2}}
+% A requirement for {\bf GOAL1} is that we can run enough variants of our system in order to find a useful extension.
+% Currently, the OMNI-1 prototype is too slow for that purpose\footnote{ Using cloud-compute, Table~\ref{tbl:contagioAccuracy} needed  15 hours to generate;
+% hence   Figure~\ref{fig:contagio_distance} needed 65 hours and  Table~\ref{data} needed over 300 hours.}. Hence, {\bf GOAL2} of this proposal is to speed up OMNI-2 to run orders of magnitude faster than OMNI-1.
+
+% PI Menzies' research work is on optimization, and how to make it run faster. This section describes three such tactics called
+% {\bf {\em 1.~old-but-gold}}; {\bf {\em 2.~dumb-but-faster}};
+% and {\bf {\em 3.~dodging}}. 
+
+%  \noindent
+% \underline{\bf {\em 1.~Old-but-gold}} : In the experience of PI Menzies, the {\em more} we tune a  data miner, the {\em better} it becomes. Also, the 
+% {\em faster} a learner runs, the {\em more} often we can improve it, via tuning.
+% This suggests an interesting strategy where, to generate better data miners, take some older and less sophisticated version of a learner (which runs faster), then tune it more often.   We came to this  {\bf {\em old-but-gold}} after reading arguments that   deep learning researchers have rushed on too far and have overlooked
+% the benefits of simpler neural architectures. For example, Galke and Scherp~\cite{galke2021forget}  show that for image classification, simple, decades-old feedforward networks  can perform as well as modern deep learning techniques,
+% at some small fraction of the computational cost.  In work with his graduate student Mr. Rahul Yedida, PI Menzies has shown that
+% for certain software quality models, much better results can be obtained via tuning feed forward networks (that take seconds
+% to terminate) than using state-of-the-art deep learners (that take hours to terminate)~\cite{yedida22a}.
+
+%  \noindent
+% \underline{\bf {\em 2.~Dumb-but-faster}} :  In essence, OMNI is a configuration problem and suffers from the same
+% problem seen in much of the  configuration management research~\cite{8469102}.
+% Specifically, reasoning about configurations can be very slow
+% since there are a very large number of possible configurations\footnote{E.g. 20 binary options implies a configuration space of $2^{20}>1,000,000$ options.}. In work with his former graduate student Dr. Vivek Nair, PI Menzies has explored the value
+% of approximate surrogates for evaluating each configuration.  In their work, they learned regression trees~\cite{BreiFrieStonOlsh84}
+% from examples of configured learners (with their associated performance scores) to generate guesstimates for the efficacy of new configurations.
+% Such regression trees can be generated very quickly but may generated inaccurate guesses.
+%  Menzies and Nair~\cite{nair2017using} showed that
+% exact performance values (e.g., accuracy of recognizing malicious payloads)
+%   are not required to rank configurations and to identify the optimal one. As shown by their experiments, performance models that are cheap to learn but inaccurate (with respect to the difference between actual and predicted performance) can still be used rank configurations and hence find the optimal configuration. Their novel rank-based approach could allow OMNI-2 to  significantly reduce the cost (in terms of number of measurements of sample configuration) as well as the time required to find good configurations.
+
+% \noindent
+% \underline{\bf {\em 3. Dodging}} : PI Menzies and his former graduate student Dr. 
+% Amritanshu Agrawal have exploited Deb's 2005 notion of {\em epsilon domination}~\cite{deb2005evaluating} to speed up optimization. {\em Epsilon domination} assumes that when we run 
+% any system via stochastic choice (e.g. we used 90\% of the data, selected at random, for training) then there is some natural
+% variability epsilon $\epsilon$ in the performance output. Hence,  when comparing two systems, if the  performance delta is less than $\epsilon$ , they are indistinguishable. Menzies and Agrawal added a tabu search to their optimizer: if two random configurations produced results within
+% $\epsilon$  of each other  (in $y$ space) then a ``dodge'' factor was added to those points (in $x$ space) such that we avoid
+% sampling
+% near those points again. zhbq
+
+
+% When tested on other domains, {\bf {\em old-but-gold}} and {\bf {\em dumb-but-faster}}
+% and {\bf {\em dodging}}   speed up optimization by factors of  120, 20, and 35 (respectively).
+% This proposal will be the first to test those methods in the domain
+% of   adversarial defense.
+
+% \subsubsection{Trade-offs and Risks}\label{r2}
+% The faster we can do the optimizations, the more learners we can explore,
+% But, as with the previous goal, if we spend too much time on this task, we risk getting nothing else done.
+% Hence we may need to trade the benefits of exploring more learners against an exploration of core  theoretically
+% significant issues like {\bf GOAL5}.
+
+
+
+% \subsection{GOAL3: Mitigate DNN variance and robustness issues using adversarial HPO. \label{4.3}}
+% As stated above, the robustness issues of DNN models exist both in single-modal and multi-modal PTMs. Appropriate hyper-parameters are of great importance to mitigate this issue. Hence, \textbf{GOAL3} of this proposal is to find the optimal hyper-parameters to balance the accuracy and robustness via HPO when adversarial attacks exist in the DNN training. 
+
+% To address this problem, a Rao-based evolutionary HyberBand multi-object HPO algorithm is expected to be studied.
+
+% In this part of the research, we will test the robustness and accuracy of the final trained model. To this aim, we intend to achieve good performance in the following scenarios:
+
+% \bi
+% \item Clean training samples. The original samples in the training set are the most valuable and common data for the training of pre-trained models. Here, the experiments on the clean training samples evaluate the learning ability of the pre-trained models;
+
+% \item Clean unseen samples on the exact domains. Here, the clean unseen samples evaluate the generalization performance of the pre-trained models on the source domains;
+
+% \item Clean unseen samples on the target domains. The fine-tuned models on the target domains examine the adaptive performance of the trained models;
+
+% \item Adversarial samples on the source domains according to several black-box and white-box attacks. In the proposal, the adversarial learning process is conducted on the pre-training models, and hence it is expected that the trained models maintain the robustness on the source domains;
+
+% \item Adversarial samples on the target domains according to several black-box and white-box attacks. This scenario evaluates the robustness of the final DNN models.
+
+% \ei
+
+% \subsubsection{Trade-offs and Risks}\label{r3}
+
+%  Once {\bf GOAL1} and {\bf GOAL2} are achieved, the corresponding multi-objective HPO strategies can be studied. Here, more adversarial samples lead to more robustness of the DNN models. However, more adversarial learning also causes a decrease in generalization performance. Hence, there should be a trade-off between these two metrics. More generally, robustness is one important goal of the hyper-parameter process, but not unlimited. That is, we will enhance the robustness of the PTMs as the model at least reaches the lowest acceptable generalization performance.
+
+% As mentioned in our introduction,
+% OMNI-1 was tested against
+% {\em non-adaptive attacks}. In such attacks, the control parameters of the attacker are fixed.
+% {\em Adaptive attacks}~\cite{DBLP:conf/nips/TramerCBM20},
+% on the other hand,
+% are a type of attacks that are strategically improve the attack methods and specifically designed to target a given defense. In this part of the research, we will test OMNI-2 against adaptive attacks.
+
+
+% There are many examples of adaptive attack which we can test on OMNI-2:
+% \bi
+% \item
+% For example, Ada-FGSM~\cite{shi2020adaptive} is a new iterative adversarial attack that  adjusts the step size by better exploiting gradient information obtained. The authors
+% of that method argue that in order for a better attack effect, the step size should be positively related to the gradient value obtained at each step, instead of being evenly distributed.   Ada-FGSM can exploit the gradient's historical information and allocate more reasonable step size for the noise.
+% \item Yuan et al.~\cite{yuan2020adaptive} pointed out that generating adversarial examples was an optimization problem that make an imperceptible change on the original samples while making the model predict incorrectly and previous attacks optimize a weighted sum of losses. They proposed an adaptive method that learns the weightings without manually searching hyperparameters.
+% \item Wang et al.~\cite{wang2019invisible} provided a method that adaptively distribute the sample perturbation to a local stimulus in the benign image data and they showed that adaptive adversarial attacks can synthesize indistinguishable adversarial examples from benign ones and outperform the state-of-the-art
+% methods.
+% \item For Li et al.~\cite{li2020adaptive},
+% instead of   uniform distribution of attack configurations,
+% they learn a rule about the sampling strategy from each iterations. 
+% \item Xiao et al.~\cite{xiao2020adversarial} introduced an adaptive gradient based adversarial attack method named Adpative Iteration Fast  Gradient Method (AI-FGM) that focused on seeking the input's preceding gradient and adjusted the accumulation of perturbed entity adaptively for performing adversarial attacks.
+% \ei
+% Our pre-experimental intuition is that defending against adaptive adversarial attacks will become another speed problem; i.e.  the faster we can generate different defenses  (using the results of {\bf GOAL2}) , the better we will be able to counter against attack adaption.
+
+% %Moreover, prior works~\cite{DBLP:conf/nips/TramerCBM20} argue the fact that adaptive attacks cannot be automated and always require appropriate tuning to a certain defense. For example, carefully designing the loss function so that higher loss values result in strictly stronger attacks. 
+% \begin{table}[!t]
+% \centering
+% \footnotesize
+% \caption{Defense strategies   evaluated in 
+% Tramer et al.~\cite{DBLP:conf/nips/TramerCBM20}. In this table, adaptive nethods are shown in bold.}
+% \begin{tabular}{|r|l|}
+% \hline
+% \multicolumn{1}{|c|}{\textbf{Defense}} & \multicolumn{1}{p{5cm}|}{\textbf{Brief Description}} \\ \hline \hline
+% k-Winners Take All & \begin{tabular}[c]{@{}l@{}}Propose an activation function that is intentionally designed to mask  backpropagating gradients \\in order to defend against gradient-based  attacks.\end{tabular} \\ \hline
+% The Odds are Odd & \begin{tabular}[c]{@{}l@{}} Uses a  statistic to detect adversarial examples, using    the distribution of a classifier’s logit values.\end{tabular} \\ \hline
+% Generative Classifiers & \begin{tabular}[c]{@{}l@{}}Use multiple models, aggregation of multiple losses, stochasticity, and an extra detection step.\end{tabular} \\ \hline
+% Sparse Fourier Transform & \begin{tabular}[c]{@{}l@{}}Introduce a defense to $l_{0}$ adversarial examples via a``robust sparse Fourier transform''.\end{tabular} \\ \hline
+% Rethinking Cross Entropy & \begin{tabular}[c]{@{}l@{}}Propose a new loss function to use during training in order to increase adversarial robustness.\end{tabular} \\ \hline
+% \textbf{Error Correcting Codes} & \begin{tabular}[c]{@{}l@{}}\textbf{Propose a method for training an ensemble of models with sufficient} \\ \textbf{diversity that the redundancy can act as error-correcting codes to}  \textbf{allow for robust classification.}\end{tabular} \\ \hline
+% \textbf{Ensemble Diversity} & \begin{tabular}[c]{@{}l@{}}\textbf{Train an ensemble of models with an additional regularization term that}  \textbf{encourages diversity.}\end{tabular} \\ \hline
+% EMPIR & \begin{tabular}[c]{@{}l@{}}Constructing an ensemble of models with mixed precision o weights and activations.\end{tabular} \\ \hline
+% Mixup Inference & \begin{tabular}[c]{@{}l@{}}  Stochastic interpolation  to mitigate  effects of adversarial perturbations.\end{tabular} \\ \hline
+% ME-Net & \begin{tabular}[c]{@{}l@{}}Train a model on such pre-processed inputs, with the aim  of learning representations that are less \\ sensitive to small input variations.\end{tabular} \\ \hline
+% Asymmetrical Adv. Training & Use adversarially-trained models to detect adversarial examples. \\ \hline
+% Weakness into a Strength & Adversarial example detector. \\ \hline
+% \end{tabular}
+% \label{tbl:adaptiveAttack}
+% \end{table}
+
+
+% \subsubsection{Trade-offs and Risks}\label{r3}
+
+% %Existing ensemble based defense strategy is also shown to suffer from adaptive machine learning attacks. Therefore, OMNI-2 would take this into consideration and enable the ensemble defense strategy adaptive accordingly. For example, adjust the strategy to select ensemble classifier or with a different ensemble size.
+
+%  Once {\bf GOAL2} is achieved,
+%  then OMIN-2 can adjust its defenses very quickly by
+%  (a)~rapidly generating a large ensemble of near-optimal but unexpectedly different classifiers then (b)~using some random subset of that ensemble at runtime to defend
+%  against adversaries. 
+ 
+% That said, it is difficult to defend against adaptive
+% attacks. After evaluating the robustness of existing defense strategies (selected from top machine learning conferences such as ICLR, ICML and NeuralIPS, see
+% Table~\ref{tbl:adaptiveAttack}), 
+% Tramer et al.~\cite{DBLP:conf/nips/TramerCBM20} 
+% reported that the adaptive attacks can circumvent all of them and reduce the accuracy from claimed performance. 
+
+% Hence we say that defending against adaptive adversaries is one goal of OMI-2, but not the only goal. That is, it is possible we can fail in this goal while still succeeding
+% on the other goals.
+
+% Also, we point out the value of {\bf GOAL5} in this research.
+% If in {\bf GOAL3}, OMNI-2 can defend against adaptive attacks
+% (by rapidly changing between of a wide range of defence tactics), then that would be supportive evidence
+% for {\bf GOAL5}; i.e. that all learners do not converge to the same decision boundary. And it that case,   we could offer much hope
+% that defenders can defeat attackers.
+
+
+% %Table ~\ref{tbl:adaptiveAttack} lists several state of the art defense methods. With evaluation of adaptive attacks against these defense method, Tramer et al. found that despite the presence of an adaptive attack evaluation, studied methods could be circumvented with improved attacks. In this case, Tramer et al. suggest to focus on defense on adaptive attacks as well as a non-adaptive evaluation.
+
+
+% \subsection{GOAL4: Pruning and clustering to enhance robustness for pre-trained DNNs. \label{4.4}}
+
+% As stated in the introduction, one limiting
+% nature of the   OMNI-1 study was the range of examples
+% used to assess.
+% Hence {\bf GOAL4} of this work is to test OMNI-style reasoning in a broader context.
+
+% As the field of adversarial learning expands, this field
+% extends the set of comparison algorithms and data sets. 
+% In this research, we would compare the OMNI-2 against
+% the methods of Table~\ref{tbl:adaptiveAttack},
+% using the data of Table~\ref{tbl:securityDataset}. Also, over the course of this grant, we would expect the set of
+% available algorithms and data sets to further expand
+% (and when that happens, we would test OMNI-2 on that expanded set). 
+
+
+
+% \item{Distribution shift} causes DNNs accuracy degradation lacking in high reliability, which makes it fail to decide a reasonable classification result with a quite different input from the training data, e.g., CodeS~\cite{hu2022codes} presents code features shifting causes failures in code completion. In (\ref{eq1}), a robust model $f$ returns a disturbed output $\hat{y}$ should not belong to the output domain, when accepting an $out-of-distribution$ input $\hat{x}\notin \mathbb{X}$. %decision results should mention some arg max?
+
+% \item{Perturbation attacks} on the DNNs cause misclassification in specific targets only by manipulating on average over 4\% of the inputs but achieving a 97\% adversarial success rate~\cite{papernot2016limitations}. In (\ref{eq2}), a robustness model ($f$) to an adversarial attack, given a perturbed input $\hat{x}$ under \texttt{p} normalization has the $\sigma$ distance with the original input $x$. Formally, for the classification results from the interval distance, we assume a longer distance indicates a more robust model, e.g., a robust model can classify the same class to $x$ and $\hat{x}$ under $\|x-\hat{x}\|_\mathtt{p} < \sigma$, suggested the decision boundary is larger enough to tolerate more perturbations.
+
+% \item{Label-flipping attacks} on DNNs corrupt from unreliable labels, which are assumed as $noisy\ labels$~\cite{severyn2015twitter}, because they can corrupt in the training set, testing set functioning as the ground-truth labels. Nguyen \textit{et al.}~\cite{nguyen2019self} and Zhang \textit{et al.}~\cite{zhang2021understanding} prove that DNNs are easily covering and fitting the whole datasets, even with the corrupt labels, which causes significant underfitting to the benign result. For a robust model, in (\ref{eq3}), though $\hat{y}$ and $y$ being deviated by $\tau$ times, the final \emph{argmax} values of $\hat{y}$ and $y$ should fall into the same classification decision boundary, which can be proven of the model with a high capability of generalization and robustness.
+
+% \item{Model optimization} and compression aim to explicitly implement an energy-efficient and lightweight model, which fits into more resource-limited scenarios (e.g., downstream models in mobile devices) and releases the pressures on high-demand of computation. The objective of the neural network pruning - reducing the size of the network, removing parameters, re-balancing weights and bias, quantizing neurons, has populated with many meaningful works~\cite{han2015deep,he2018amc,kang2019decoupling,wang2019haq}. Meanwhile, the achievements of the smaller networks with less computation workload are shadowed by the inconsistency of model performances, e.g., different accuracy, generalization, and robustness. In (\ref{eq4}), a robust model ensures the consistent classification result under the modified $ratio$. %
+
+% DNN robustness may reason from the following four aspects: Training input, training output, model, and inference input. 
+
+% Deep into the workflow of DNNs,
+% The function can be further expressed as a structured $k$-layer neural network $f : f_k \circ \sigma_{k-1} \circ \dots \circ \sigma_1 \circ f_1$, where $\sigma$ is a non-linear and differentiable \emph{activation-function} (e.g., $tanh$\cite{haykin2004comprehensive}). 
+% The approximation of the DNNs, \emph{w.r.t} the compact convergence topology, establishes on multiple layers neural networks represented by multiple composited functions. 
+
+% However, the robustness of the DNN is challenged by data perturbation and its implementation techniques. 
+
+% From the above definition of DNN, DNN enables the approximation of the composited functions owing to the non-linear representation of DNN with a large $k$. 
+% Hence, a robust model should meet with the following four phenomenons:
+
+% \textcolor{red}{
+% A DNN model exploits techniques including but not limited to  non-linear activation-function, drop-out methods, and other randomness, so as to assume the model as the function, which characterized with non-convexity and non-linearity. } 
+% Ideally, a robust model should meet with four scenarios, as 
+
+
+% Here, our interests include renewable electricity prediction, plastic waste identification, agrifood quality evaluation, and medical diagnosis. Hence, {\bf Task 1} of this proposal: Study and understand the robustness issues of DNN on multiple domains.
+% In this proposal, we provide a taxonomy from the perspective of the impacted phases in DNN learning. Furthermore, we intend to identify which factors in DNN learning decrease the DNN robustness in specific fields and to what extent. Here, our interests include renewable electricity prediction, plastic waste identification, agrifood quality evaluation, and medical diagnosis. Hence, {\bf Task 1} of this proposal: Study and understand the robustness issues of DNN on multiply domains.
+
+% \begin{itemize}
+%   \item \textbf{Operational testing of DNNs}  
+%   \item \textbf{Sampling-based testing}
+%   \item \textbf{Auxiliary information}
+%   \item \textbf{Factual properties analysis}
+% \end{itemize}
+
+% Considering deep learning aims to learn a neural network $f: \mathbb{X} \rightarrow \mathbb{Y}$ where $\mathbb{X}$ and $\mathbb{Y}$ are from training set $\mathbb{D}_T$, the corresponding result $y'$ for the inference input $x'$ (where $x'$ is assumed from the distribution $\mathbb{D}_I$) can be expressed as: 
+% \begin{equation}\label{eq:supervised_learning}
+% \begin{aligned}
+%   y'&=f(x'),\ x'\in\mathbb{D}_I, \\
+%   f&=\mathop{\arg\min}_{(x,y)\in\mathbb{D}_T}{L(f,x,y)},
+% \end{aligned}
+% \end{equation}
+% where $L(\cdot)$ denotes the loss function in supervised deep learning, and $\mathbb{D}_T$ and $\mathbb{D}_I$ are expected from the identical distribution. 
+
+% According to the analysis in \S \ref{Formal}, we provide a taxonomy from the perspective of the specific impacted phase in Figure~\ref{fig:RP_GOAL1_factors}. 
+
+
+%   More specifically, we intend to craft adversarial samples via traditional black-box and white-box attacks, including Fast Gradient Sign Method (FGSM) \cite{goodfellow2015explaining}, Projected Gradient Descent (PGD) \cite{madry2018deep}, Bit Gradient Ascent (BGA) \cite{al-dujaili2018adversariala}, and Elastic-net Attacks against DNNs (EAD) \cite{chen2018ead}. 
+
+
+
+
+\begin{table}[!htbp]
+    \centering
+    \caption{Datasets}
+    \small
+    \begin{tabular}{|l|l|}
+        \hline
+        \multicolumn{1}{|c|}{\textbf{Datasets}} & \multicolumn{1}{c|}{\textbf{Dataset Description}} \\ 
+        \hline
+        \hline
+        Recyclenet\cite{Recyclnet} & Attentional Learning of Trash Classification. \\ \hline
+        Trashnet\cite{trashnet} & Dataset of images of trash; Torch-based CNN for garbage image classification. \\ \hline
+        Food-101\cite{food101} & Dataset of food; 101000 images; 101 food categories.\\ \hline
+        MNIST\cite{MNIST} & Database of handwritten digits. \\ \hline
+        Fashion-MNIST\cite{F-MNIST} & A MNIST-like fashion product database.\\ \hline
+        Deep-forecast\cite{ghaderi2017deepforecast} & Time series data from a collection of wind mills in the north-east of the U.S. \\ \hline
+        Deep-forecast-Turkey-2016\cite{Deep-forecast-turkey-2016} & Time series data from a collection of wind mills in the Turkey in 2016. \\ \hline
+        
+    \end{tabular}
+    
+    \label{tab:my_label}
+\end{table} 
+
+
+
+% 
+
+% {\textbf{Study Plan.}} 
+
+% \begin{itemize} 
+% \item \textbf{Data}
+%   \begin{itemize}
+%   \item \textbf{Adversarial samples:} Adversarial attack, which is correspondent to \eqref{eq1}, on the DNNs causes misclassification only by perturbations on average over 4\% of the inputs but achieving a 97\% adversarial success rate~\cite{papernot2016limitations} in the training period and preventing deep learning from effective modelling. For this factor, we explore the attack from black-box/white-box scenarios, the number of constructed adversarial samples, and their mechanisms, such as the changing of decision boundaries. 
+  
+%   \item \textbf{Covariate shift:} Inference samples may suffer unknown changes when a trained model is for long-term use, known as a covariate shift issue (existing in \eqref{eq3}). For this factor, we intend to study the impacts of the time characteristics in some critical tasks, e.g., malware evolving detection and supply chain change identification.
+  
+%   \item  \textbf{Weakly-labelled data:} Indistinguishable samples in multiple comparable categories are difficult for the experts to label correctly, known as weakly-labelled issues (existing in \eqref{eq2},\eqref{eq3}). For this factor, we intend to study the impacts of several different labelling manners, including AI tools, Human expertise, and human+artificial expertise~\cite{tu2020better}.
+
+%   \item  \textbf{Out of distribution:} The predicted samples are from a different distribution other than the training set, which is correspondent to \eqref{eq2}. Such samples, which need further human intervention, are always tricky for general deep learning methods. For this factor, we intend to introduce clustering techniques into the models and study the different detection techniques so as to enhance the model as a target-distribution-aware model.  
+%  \end{itemize}
+
+
+
+% \item \textbf{Configuration} 
+%   \begin{itemize}
+%   \item \textbf{Non-deterministic layers:} The non-deterministic layers are used to prevent overfitting, whereas they randomly guide the neurons to be trained in different portions of the data. However, the random selection rules are based on random seeds which cause variances and uncertainties in training accuracy and time. We intend to find and estimate the fluctuation ranges 
+  
+%   \item \textbf{Random initialisation:} Initial parameters play an essential role in DNN model convergence. However, the selection of the initialization methods works differently in various deep learning frameworks. In this study, we aim to study the impact of the initialization methods by setting different initialization methods, including Xavier initialization\cite{glorot2010understanding}, Kaiming initialization\cite{he2015delving}, and random Gaussian initialization\cite{saxe2013exact} on multiply network architectures, e.g., convolutional network, recurrent network, and feed-forward network.
+  
+%   \item  \textbf{Stochastic gradient descent:} After determining the DNN structure and the initial parameters, model parameters are commonly updated via gradient descent algorithm. However, the training data are always re-shuffled in each epoch to improve the generalization performance. In this proposal, we intend to study the impact of this data randomness via identical experiments with different shuffle strategies, i.e., no shuffle, shuffle with fixed seed in multiply runs, and shuffle with different seeds in multiply runs. 
+
+%   \item  \textbf{Gradient clipping:} In deep networks, especially networks with many stacked layers, the unstable training results in severe gradient exploding problems. To guarantee robust training, gradient clipping techniques are proposed to clip the over-large gradient value into a fixed value. However, the setting of the fixed value is always heuristic and depends heavily on the initial weights and loss function.
+  
+%   \end{itemize}
+% \end{itemize}
+
+% \begin{table}[!htbp]
+%     \centering
+%     \caption{Factors and bound settings}
+%     \small
+%  \resizebox{\columnwidth}{!}{%
+%  \begin{threeparttable}
+%     \begin{tabular}{lllll}
+%         \toprule
+%         No. & Factor variable & Upper bound & Lower bound & Step width  \\
+%         \midrule
+%         F1 & $\sigma$ for adversarial sample generation & 10 & 0 & 1  \\
+%         F2  & Image classification & CIFAR100~\cite{krizhevsky2009learning} & WRN-28-10\tnote{1}~\cite{zagoruyko2016wide} & SGD \\ 
+%         F3 & Recycling waste classification & RecycleNet~\cite{trashnet} & ResNet+Attention~\cite{RecycleNet_trash_images} & SGD \\ 
+%         F4 & Malware detection & BODMAS~\cite{bodmas} & Feed-forward neural network~\cite{harang2020sorel,bodmas} & Adam \\
+%         F5 & Renewable energy prediction & Deep-forecast~\cite{ghaderi2017deepforecast} & DL-STF\tnote{2}~\cite{ghaderi2017deepforecast} & RMSprop \\
+%         F6 & Medical diagnosis & Physionet 2017 challenge dataset~\cite{clifford2017af} & ResNet~\cite{hannun2019cardiologist} & Adam \\
+%         F7 & Video action recognition & UCF101~\cite{soomro2012ucf101} & VGG16+LSTM~\cite{wu2020robustness} & SGD \\
+%         F8 & Video action recognition & UCF101~\cite{soomro2012ucf101} & VGG16+LSTM~\cite{wu2020robustness} & SGD \\
+%         F9 & Video action recognition & UCF101~\cite{soomro2012ucf101} & VGG16+LSTM~\cite{wu2020robustness} & SGD \\
+%         \bottomrule
+%     \end{tabular}
+%     \begin{tablenotes}
+%     \item[1] WRN-28-10 denotes the WideResNet where the network depth is 28 and the widening factor is 10. \\
+%     \item[2] DL-based Spatio-Temporal Forecasting (DL-STF) denotes the spatio-temporal recurrent neural network in~\cite{ghaderi2017deepforecast}.
+%   \end{tablenotes}
+%     \end{threeparttable}
+
+%  }
+%     \label{tab:existing}
+% \end{table} 
+
+
+% {\textbf{Experimental settings.}} In this project, we focus on seven critical application scenarios and leverage the default data and configuration settings in the original implementation as our initialisation (Table~\ref{tab:existing}). We intend to reproduce these works using default datasets and configurations in the original work. Then, according to the DNN robustness in~\eqref{eq1}-\eqref{eq4}, we construct data and configurations for each project. 
+% \begin{itemize}
+%     \item \textbf{Perturbed inputs:}  To introduce the perturbed inputs, we plan to craft perturbed samples as the counterpart to \eqref{eq1} for each project. Many attacking methods and adversarial threat models have been developed to generate adversarial samples efficiently (i.e., minimal and imperceptible perturbations). Hence, we will refer to the popular state-of-art attacking algorithms (e.g., FGSM~\cite{goodfellow2015explaining}, PGD~\cite{madry2018deep}, and BGA~\cite{al-dujaili2018adversariala}) to generate the perturbations to conduct quantitative and qualitative analysis and study the influences of the following perturbations on the robustness of the model. For example, FGSM obtains the counterparts by $\hat{x} = x + \delta \mathbf{sign}( \nabla_x \mathcal{L}(\theta, x, y))$, where $\delta $ is the attacking step, $\mathcal{L}$ is the model training cost. The perturbation example $\hat{x}$ is added by the sign of the gradient of the cost function with the respect to the original inputs. Specifically, we will introduce fixed proportions (i.e., 1\%, 2\%,...,10\%) of perturbed samples to our explored projects. 
+    
+%     \item \textbf{Irrelevant inputs:} We intend to collect and introduce extra out-of-distribution data as the irrelevant inputs, e.g., EMNIST~\cite{cohen2017emnist} for project \#1, Tiny ImageNet~\cite{le2015tiny} for project \#2. We plan to differentiate OOD-aware and OOD-unaware models, of which the former learns the extra distribution-discriminative representations containing OOD samples information. We use Prediction Confidence Score (PCS) to calculate the distance of one sample to its decision boundary so as to evaluate how much uncertainty of the prediction result on the current sample inputs. \textbf{XU:$PCS (x, \mathbb{M}) = $}
+
+%     \item \textbf{Noisy labels:} Following~\eqref{eq3}, we plan to set up a fixed step of the proportions of labels to be flipped in the training samples. In practice, to examine the robustness of the existing model, we intentionally flip the labels with $0\%$ to $100\%$ and observe the effects of the different types of flipping methods, such as random flipping, and per-class flipping.
+
+%     \item \textbf{Configurations:} DNN robustness is affected by many configuration-level factors, including both structure-related and learning-related ones. Here, we explore the impacts of  these representative factors, i.e., non-deterministic layers (30 runs for dropout layer with different seeds), weight initialization method (Xavier initialization\cite{glorot2010understanding}, Kaiming initialization\cite{he2015delving}, and random Gaussian initialization\cite{saxe2013exact}), optimisation method (SGD~\cite{kiefer1952stochastic}, Adam~\cite{kingma2014adam}, and RMSprop~\cite{graves2013generating}), the value of gradient clipping (-0.5, -0.1, 0.1, 0.5, and 1). 
+% \end{itemize}
+% We will carry out the related experiments on a Ubuntu 20.04 machine with 8 cores, 125GB of RAM, and NVIDIA Quadro P4000 graphic cards with 25GB memory.
+
+
+% Depending on the \emph{CDD}, an oracle is to analyze the model's most vulnerable or sensitive aspects with the lowest \emph{CDD}, by carrying out input samples including the single or multiple combined factors to determine whether the model under factors exhibits an expected or unexpected behaviour. Constructing and acquiring such factors is difficult and expensive in our task due to a large number of factor combinations. Typically, we can't use straightforward methods (e.g., grid search) to require the parameters from each factor in generating suitable samples, considering some of the cases in factors are worthless and trivial. To alleviate the oracle problem, 
+% inspired by Chen \textit{et al.}~\cite{ChenReport}, we infer Metamorphic Relations (MRs) for factor settings and acquire appropriate inferences of the effects (i.e., \emph{CDD} score) of the model. 
+
+% \textbf{MI} To decrease the cost of suitable oracle generation, Metamorphic Inference (MI) uses existing limited number of Metamorphic Relations (MRs) to infer the other potential relations to what degree. In our context, MR is a necessary property holds 
+% two relations $\mathtt{MR}_i(I_1, I_2) \Rightarrow \mathtt{MR}_o(O_1, O_2)$, where $I_1$ and $I_2$ are vector of settings$\langle s_1, \dots, s_n\rangle, n \geq 2$. A MR specifies how a change is signified to the input ($\mathtt{MR}_i$) with a change to the output ($\mathtt{MR}_o$). 
+
+
+% \begin{wrapfigure}{r}{9cm}
+%     \centering
+%         \includegraphics[scale=1.35]{fig/RP_GOAL1_factors.pdf}
+%     \caption{ \footnotesize  Factors relating to the robustness issues \label{fig:RP_GOAL1_factors}}
+% \end{wrapfigure}
+
+% Most of the previous efforts have focused on the data impacts of DNN robustness, however, fewer studies have been made toward a systemically or holistic understanding of a wider range of factors (e.g., model and software configurations) and their coalesced effects with imperfect data for DNN robustness. In this proposal, we will study these relatively unexplored robustness affecting factors as depicted in the taxonomy in Figure~\ref{fig:RP_GOAL1_factors}. 
+% In the project, we aim to conduct a large-scale empirical study to characterize these factors and explore how and to what extent these factors influence the DNN robustness. 
+
+%  
+
+
+
+% \textcolor{red}{Some factors (e.g., $F_5$ weight perturbation) might not have a big adverse effect on robustness but engage an amplified negative effect when combined with other factors (e.g., weight initialization working on an x-bit quantized neural network). In contrast, some factors alone can have a big impact while combing with other factors can neutralize its negative effect.}
+% We plan to collectively sample every single factor and their combinations $fac=\{ fac_j\ |\ fac_j \in (F_D\times F_C)\cup F_D \cup F_C \}$ to actively rank the important factor(s) that potentially affect the robustness when training a DNN model in a particular domain. 
+
+
+% \textbf{C-CDD} Both for single factor and polynomial factor in $fac$, the factor importance to the DNN robustness can refer to the fluctuation of the DNN performance with different factor settings. Hence,  we give the definition of factor setting evaluation here. Given any factor combination $\mathbf{S}=[s_1,s_2,\cdots,s_N]$ ($\mathbf{S}\in fac$), $ s_i (1 \leq i\leq N)$ denotes the specific value of $i$th factor in $\mathbf{S}$ and $N$ denotes the number of factors in $\mathbf{S}$. Then for each given setting, a set of corresponding perturbed samples can be generated via \eqref{eq1}-\eqref{eq4}. Then the cumulative CDD  of the corresponding factor setting is:
+
+% \textbf{Combinatorial selection} Exhaustive enumeration of the multiplied factors in \emph{fac} is expensive to generate all following newly configured models and calculate factor setting evaluation. 
+% Typically, we can't use straightforward methods (e.g., grid search) to require the parameters from each factor in generating suitable samples, considering some combinations are worthless and trivial.
+% In alleviating the exhaustive enumeration problem, we applied the mini-max principle to maximize the try to discover combinations to the lowest \emph{C-CDD} and minimize the number of the factors in the combinations to that point. Initially, we manually discriminate the feasibility of the combinations in \emph{fac}. Then we use DE to exercise and calculate all single and pair-wise factors \emph{C-CDD} under its optimized settings. Furthermore, for the multiplied factors, we select and calculate the ones that more inclusive pair-wise factors could degrade the \emph{C-CDD} than the ones that are neutralized. The final \emph{C-CDD} will be ranked with the configuration and supplying priory knowledge to \textbf{Task-2}.
+
+% Typically, straightforward methods (e.g., grid search) are not applicable to require the parameters from each factor in generating suitable samples, considering some combinations are worthless and trivial.
+
+
+
+is robust and resilient to the input samples, to which reach high confidence with the outputs. 
+% Then we construct an $N$-ary tree (where each node has no more than $N$ children) to represent a complete subset of combinatorial factors in Figure~\ref{fig:task1frame}, of which the path from the root to the node in $i$-th layer ($0 < i \leq N$) is a combination of factors. 
+% We follow \textbf{mini-max principle} to prune the illogical factor combinations (e.g., we cannot mimic the infeasible settings with their layers and neurons given a certain structure of DNN to an adversarial attack) and smaller degraded combinations (i.e., multiplied factor settings have a higher C-CDD score than a single or fewer setting). 
+
+Beginning with single and double-combined factors, we then utilize {Differential Evolution} (\textbf{DE}) algorithm to search all optimized settings, from which we can obtain the lowest C-CDD given such a (combined) factor. Then we apply the voting strategies to more than three-factors combinations, for which its subset combinations have a lower C-CDD score (e.g., we select $F_1,F_2,F_3$ because its subset combinations \{\{$F_1,F_2$\}, \{$F_1,F_3$\}, \{$F_2,F_3$\}\} have a lower C-CDD score compared with its corresponding single factors).  After the combinatorial selection and evolution process, we can identify the impacts of the polynomial factors and rank all the explored factors for the robustness enhancement in \textbf{Task 2}.
+
+
+
+conduct 
+
+
+active learning 
+
+train the original model to dissimilar with the tuned configuration settings against the low C-CDD score configurations, which is studied from \textbf{Task 1}.
+
+As shown in Figure~\ref{fig:goal2}, in \textbf{(1)}, we organize iterative data augmentation strategies 
+
+via CAP to augment the imperfect data by selecting insufficient data samples and clustering in the latent embedding space. In \textbf{(2)}, we will enhance the robustness of the model by  CRL with the distinguished configuration patches and augmented data samples from (\textbf{1}). 
+
+% \textbf{(1) Data augmentation} Active learning has become an emerging paradigm for efficiently augmenting well-labelled data from a large pool of unlabelled data ($\mathcal{D}^u$). This technique learns to select the most informative and diverse samples for human experts to label, thus improving the model performance with significantly reduced manual costs. We aim to conduct a new active learning approach based on contrasting latent embedding space on two aspects for active sampling: \emph{ambiguity} and \emph{distinctiveness}. Ambiguity-based approaches are based on a model’s outputs by selecting samples where the prediction model has lower predictive confidence with the downside that these approaches may select uninformative redundant data. Distinctiveness-based approaches are based on a model’s inputs via clustering to search for diversified data centres with the downside that these approaches may select distinctive but simple data. 
+
+
+% Our goal is to fulfil the objective of enhancements which are guided by the studied factors in \textbf{Task1}. 
+
+
+% To address perturbed inputs, we distinguish the \eqref{eq1} counterexamples, which cause the model mis-classifies 
+
+
+
+
+% In response to the specific scenario, we will leverage different strategies to mitigate the robustness issues and fulfil \eqref{eq1}-\eqref{eq4}. 
+
+jiankun
+\begin{table}[!h]
+    \centering
+            \caption{Robustness affecting factors and the corresponding settings}
+    %  \resizebox{\columnwidth}{!}{%
+      \footnotesize
+     \begin{threeparttable}
+    \begin{tabular}{llll}
+    \toprule
+    \textbf{Surface} & \textbf{Objective} & \textbf{Factor} &  \textbf{Setting} \\
+    \midrule
+    \multirow{4}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{Data ($F_D$)}  & \multirow{2}*{Input $x$} & \multirow{2}*{$F_1$ Adversarial attack} & Perturbation distance ($\sigma)$ \\
+      & & & Perturbation ratio ($r_p$)  \\
+      \cmidrule(lr){2-4} 
+      & \multirow{2}*{Output $y$} & $F_2$ Label flipping attack & Flipping ratio ($r_f$) \\
+      &  & $F_3$ Label noise injection &  Noise ratio ($r_n$) \\
+       \midrule
+    \multirow{7}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{ Configuration ($F_C$)} & \multirow{2}*{Model parameter $\theta_p$ } & $F_4$ Weight perturbation & Perturbation distance ($\eta_w$)  \\
+    & & $F_5$ Bias perturbation & Perturbation distance ($\eta_b$) \\
+     \cmidrule(lr){2-4} 
+    & \multirow{5}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{Model structure $\theta_s$}  & \multirow{2}*{$F_6$ Conv layer modification\tnote{1}} & Number of layers ($\eta_{cl}$) \\
+    & &  & filter size ($\eta_{fs}$) \\
+      \cmidrule(lr){3-4} 
+    && \multirow{2}*{$F_7$ FC layer modification\tnote{2}} & Number of layers ($\eta_{fl}) $\\
+    & & & Number of neurons ($\eta_{fn}$) \\    
+    & $\ldots$ &$\ldots$ &$\ldots$ \\
+   \bottomrule
+    \end{tabular}
+        \begin{tablenotes}
+    \item[1] Conv layer denotes the one-dimensional (1D) and two-dimensional (2D) layers in DNNs.
+\item[2] FC layer denotes the fully connected layer in DNNs. 
+\end{tablenotes}
+   \end{threeparttable}
+    % }
+    \label{tab:factors}
+\end{table}
+
+
+Targeting the systematic study of the robustness affecting factors, we utilize Cumulative Confidence Decision Distance (\textbf{C-CDD}), inspired by Zhou \textit{et al.}\cite{zhou2020empirical}, to evaluate the DNN robustness by measuring the distance of the inputs to the decision boundary. A lower C-CDD score from the modified or perturbed model by comparing with the original model indicates that such factors are effective to decrease the robustness of the model. 
+We utilize {Differential Evolution} (\textbf{DE}) algorithm to search all optimized settings, from which we can obtain the lowest C-CDD given such a (combined) factor. Although a small part of the contradictory combinations can be manually excluded by its modification mechanism, e.g., regarding $F_1$, we allocate settings to the perturbation distance ($\sigma$) and ratio ($r_p$) to generate adversarial examples through the weight gradient~\cite{goodfellow2015explaining}, which contradicts to the weight perturbation~\cite{weng2020towards} ($F_4$) because $\eta_w$ and $\sigma$ are both subject to the weights vector in the original network, which cannot be added together to perturb the network. \textcolor{red}{We plan to apply \emph{less-wins-more} strategies to filter and select the most affecting combinations in $fac$. If less number of factors could obtain the same low C-CDD, we will select fewer factors in combination and delete the other subsets which have inclusive relations}. 
+
+\textbf{Model pruning and quantization}
+
+Furthermore, considering quantization is a one-step process while pruning depends on iterative optimisation, we utilise the  ``quantization-Pruning'' procedure to reduce the computation cost in Figure~\ref{fig:task3}. In the following part, we will elaborate on our technology roadmaps for these two subtasks.
+
+However, direct quantization faces the performance degradation problem. From \eqref{eq: quantization}, the loss of precision is mainly from the mandatory clipping and the round operations. Motivated by Jin \textit{et al.}~\cite{jin2022f8net},  we intend to XXX to fully leverage the advantage of the quantization technique with limited precision degradation.
+
+
+
+\begin{table}[!h]
+    \centering
+     \caption{Robustness affecting factors}
+     \resizebox{\textwidth}{!}{
+    \begin{tabular}{llll}
+    \toprule
+        \textbf{Surface} & \textbf{Factor} & \textbf{Modification Target}& \textbf{Modification} \\\hline
+        \multirow{3}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{Data ($F_D$)} & $F_1$ Adversarial attack &  Input $x$ &$\hat{x} = \mathcal{P}_{F_1}(x)$ \\ \cline{2-4} 
+                        & \multirow{2}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{Output $y$} & $F_2$ Label flipping attack & $\hat{y} = \mathcal{P}_{F_2}(y)$ \\ \cline{3-4} 
+                        &                       &$F_3$ Label noise injection &  $\hat{y} = \mathcal{P}_{F_3}(y)$  \\ \midrule
+        \multirow{5}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{ Configuration ($F_C$)} & \multirow{2}{*}{Model parameter $\theta_p$ }  & $F_4$ Weight perturbation & $\hat{\theta}_{p} = \mathcal{P}_{F_4}(\theta_p)$  \\  \cline{3-4} 
+                        &       & $F_5$ Bias perturbation & $\hat{\theta}_{p} = \mathcal{P}_{F_5}(\theta_p)$  \\\cline{2-4} 
+                        
+                       & \multirow{2}{*}{Model structure $\theta_s$ }  & $F_6$ Conv layer modification\tnote{1} &$\hat{\theta}_{s} = \mathcal{P}_{F_6}(\theta_s)$  \\\cline{3-4} 
+                       &                                                 & $F_7$ FC layer modification\tnote{2}  &  $\hat{\theta}_{s} = \mathcal{P}_{F_7}(\theta_s)$ \\\cline{2-4} 
+                       & $\ldots$ &$\ldots$ &$\ldots$ \\
+   \bottomrule
+    \end{tabular}}
+    \label{tab:factors}
+\end{table}
+
+
+% TODO: TO BE DELETED  (to be confirmed by GUANQIN)
+% \textbf{Mini-max principle.} It is expensive for an exhaustive enumeration of the multiplied factors to generate all possible configured models. 
+% In alleviating the exhaustive enumeration problem, we propose the mini-max principle to maximize the perturbation to the lowest C-CDD and minimize the number of the factors to balance the budget, which includes: 
+% (1) Considering some combinations are not available in practical scenarios (e.g., an adversarial attack is given the certain structure of DNN and we cannot manipulate its settings to their layers and neurons so that the combination of $F_1$ and $F_7$ is infeasible in the experiments), we will manually discriminate the feasibility of the combinations and remove the infeasible nodes in the $N$-ary tree; 
+% (2) In an exploration of each iteration (e.g., \#1,\#2,$\ldots$,\#T), we will delete the nodes through the voting mechanism of all the proper subset of the current factor combination. Among the iteration of this pruned tree, we will leverage DE to exercise and calculate the pair-wise factors C-CDD under their optimized settings. Furthermore, for the multiplied factors, we select the combinations with a potential lower C-CDD.
+
+
+
+
+Typically, for a given factor combination which has $K$ factors ($K \le N$), the strategy $\mathcal{T}$ has $K$ parameters $\triangle=\{\omega_1,\ldots,\omega_K \}$ to control the specific perturbation strategies. 
+We aim to find $Q$ strategies with the lowest-$Q$ C-CDDs using the evolution mechanism. During the evolution process, assuming we have $Q$ random perturbation settings in the $k$-th generation, DE leverages a series of iterative steps (i.e., mutation, crossover, and selection) to generate new modification strategies (e.g., $j$-th perturbation setting $ \triangle^{j,k+1}$ where $j \le Q$) in $(k+1)$-th generation:
+\begin{itemize}
+    \item Mutation. Mutation aims to generate a new perturbation setting through differential calculation.  In mutation, the initial generation of the $j$-th perturbation setting depends on three random settings in $k$-th, e.g., $\triangle^{1,k}, \triangle^{2,k}, \triangle^{3,k}$, via differential calculation:
+    \begin{equation}
+        \triangle^{j,k+1} = \triangle^{1,k}  + \epsilon(\triangle^{2,k} -\triangle^{3,k} ),
+    \end{equation}
+where $\epsilon$ denotes a scaling coefficient with $\epsilon\in(0,1]$.
+  \item Crossover. Crossover updates the generated new individuals with the previous generation. Assuming $p_r$ denotes a given probability threshold, then $\triangle^{j,k+1}$ can be updated by crossover where $m$-th ($0<m \le K$) parameter  ${\omega}_{m}^{j,k+1}$ is:
+  \begin{equation}
+      \omega_{m}^{j,k+1} = \left\{ 
+     \begin{array}{ll}
+          \omega_{m}^{j,k}, & r_{m}^{j,k+1} < p_r,  \\
+          \omega_{m}^{j,k+1},& \mathrm{otherwise},
+     \end{array}
+     \right. 
+  \end{equation}
+  where $r_{m}^{j,k+1}\sim U(0,1)$ denotes a random value and $U(0,1)$ is the uniform distribution. 
+  \item Selection. The selection operation ensures the new perturbation setting is no worse than the corresponding one in the $k$-th generation. According to the fitness comparison between $\triangle^{j,k+1}$ and $\triangle^{j,k}$, the one with better performance is regarded as the final accepted setting in $(k+1)$-th. The selection process is given as:
+  \begin{equation}
+      \triangle^{j,k+1} = \left\{ 
+     \begin{array}{ll}
+     \triangle^{j,k},& F(\triangle^{j,k})<F(\triangle^{j,k+1}),  \\
+          \triangle^{j,k+1},& \mathrm{otherwise},
+     \end{array}
+     \right. 
+  \end{equation}
+  where $F(\triangle^{j,k})$ denotes the deep learning model with setting $\triangle^{j,k}$ in this project.
+ 
+\end{itemize}
+
+
+
+## Model quantization and model pruning
+ 
+\textbf{Model quantization:}  The quantization for a given DNN can be formalised with a pair $<\phi, F, B>$, where $\phi\in\{+,\pm\}$ clarifies whether the value is signed or unsigned, $B\in \mathbb{N}$ denotes the specific bits for the quantization of the value, and $F\le B$ with $F \in \mathbb{N}$ denotes the required bits for the fractional part of the value. For a given $v$, the quantized version $v'$ can be represented by:
+\begin{equation}\label{eq: quantization}
+    v'=\frac{1}{2^F}\mathrm{round}(\mathrm{clip}(v, v_{LB}, v_{HB})),
+\end{equation}
+where $v_{LB}$ denotes the low bound of the quantized values ($-2^{B-1}$ for signed number while $0$ for unsigned number), $v_{HB}$ denotes the high bound ($2^{B-1}-1$ for signed number while $2^{B}-1$ for unsigned number), $\mathrm{clip}(v, v_{LB}, v_{HB})$ limits $v$ into $[v_{LB}, v_{HB}]$, and $\mathrm{round(\cdot)}$ limit the fractional part of the value with $F$. 
+
+However, ``one for all'' quantization strategy is not suitable for the neural network with different magnitude of parameters. Here, we indent to design an adaptive strategy for the selection of the bit width according to the layer importance. Specifically, we will select the bit width according to the layer importance. Motivated by Equation \eqref{eq:pruning_target}, the Robustness-aware layer importance $I^i$ for $i$-th layer can be estimated by the robustness (C-CDD) decreasing of the model without $l^i$:
+
+\begin{equation}\label{eq:layer_importance}
+    I^{i}= \text{C-CDD}(\mathbb{X},\mathcal{M}')- \text{C-CDD}(\mathbb{X},\hat{\mathcal{M}'}),
+\end{equation}
+where $W'$ in $\hat{\mathcal{M}}'$ here equals to 1. Let bit width $B\in\{2,3,4,5,6,7,8\}$, then the selection of $B^i$ follows:
+\begin{equation}
+    B^i = \left\{ 
+     \begin{array}{ll}
+          8, & \textrm{if}\quad 9 \le 10 \cdot I^i,  \\
+          \floor{10 \cdot I^i},& \textrm{if}\quad 2 \le 10 \cdot I^i < 9, \\
+          2,& \textrm{if}\quad 10 \cdot I^i <2,
+     \end{array}
+     \right. 
+\end{equation}
+where $\floor{\cdot}$ denotes the floor operator.
+
+Model quantization has attracted increasing attention because of its ability to quantize the weights, bias, inputs and outputs of a given deep network to meet the low resource requirement.
+
+Model quantization and pruning
+Robustness-aware layer importance $I^i$ for $i$-th layer can be estimated by the robustness (C-CDD) decreasing of the model without $l^i$:
+
+\begin{equation}\label{eq:layer_importance}
+    I^{i}= \text{C-CDD}(\mathbb{X},\mathcal{M}')- \text{C-CDD}(\mathbb{X},\hat{\mathcal{M}'}),
+\end{equation}
+where $M'=<L, W, b, \Phi>$, $\hat{M}'=<L', W', b', \Phi>$, and $L'=L \setminus \{l^i\}$, $W'=W \setminus \{w^i\}$, $b'=b \setminus \{b^i\}$. Noted that negative $I^i$ reveals the negative contribution of the $i$-th layer to the robustness performance, hence the corresponding layer will be totally pruned
+
+techniques: piecewise pruning and layer-wise adaptive pruning. 
+
+Piecewise pruning leverage cosase-grained pruning techniques for accuracy-aware layers and fine-grained techniques for robustness-aware layers.  According to Cianfarani \textit{et al.}~\cite{cianfarani2022understanding}, the robust network learns similar feature representations of benign and perturbed inputs on the shallow layers, while tends to overfit on the deep layers. Hence, we will compress the robust network via a piecewise pruning method, i.e., weight pruning on the shallow layers but structural pruning on the deep layers. Here, losses on the training set and validation set are utilized to identify the overfitting and divide the the shallow layer and deep layer. Especially, if there is no overfitting during the training phase, the whole network will be pruned via weight pruning
+
+% Given 
+
+% Following the above definitions, accuracy can be defined as:
+% \begin{equation}\label{eq:acc}
+%      \mathrm{ACC}=\frac{1}{N} \sum\nolimits_{(x,y)\in\mathcal{X}\times\mathcal{Y}} \mathbbm{1}(y, f_{\theta}(x)),
+% \end{equation}
+% \begin{equation}\label{eq:indicator}
+%      \mathbbm{1}(y,f_{\theta}(x))=\left\{ 
+%      \begin{array}{rl}
+%           1& y = f_{\theta}(x),  \\
+%           0& \mathrm{otherwise},
+%      \end{array}
+%      \right. 
+% \end{equation}
+% where $\mathbbm{1}(y,f(x))$ denotes the indicator function and $\mathcal{X}, \mathcal{Y}$ denotes the validation inputs and outputs separately for validation accuracy, $N$ denotes the number of validation samples.
+improved generalization
+
+robustness to adversarial attacks
+
+memory and compute efficiency
+% https://www.inovex.de/de/blog/neural-networks-pruning-sparsification/
+
+Model reduction should applied with three main principles: \textbf{scoring}, \textbf{scheduling}, and \textbf{Fine-tuning}.
+
+\textbf{Scoring}: Score for parameters based on their contribution to their convergence, training coefficients (e.g., \emph{weight-parameter}, \emph{bias-value}), responsible neurons ... 
+
+\textbf{Scheduling}: The pruning processes vary in different steps, whereas computing redundant neurons during gradients, weight rebalancing when after processing all data, re-initializing network ... 
+
+\textbf{Fine-tuning}: As the renewed structure of the model could not guarantee the persistent robustness of the model in \textbf{Goal 2}, rules need to be applied to preserve a nd balance $R(f)$ and $P(f)$.
+
+
+To mitigate DNN verification tasks, with the growing sizes and extending layers of DNNs, authors of ~\cite{guidotti2020verification} utilize pruning and removing redundant neurons in hidden layers to keep the whole neural network much sparser. The transformed neural networks sacrifice the accuracy and robustness for the computation-dense formal verification. Another solution is compressing method~\cite{wang2020compressing} to cluster the similar neurons and connections to be agglomerated together. The former method serves the connects across different layers to remove neurons when the input neuron to the neuron on the output layer are all zero. The latter merges the zeroed neurons in each layer. Both methods contribute to reducing the redundant neuron computations and prune the networks sparser, which benefits the fewer computations in formal verification processes and reconstructs a smaller network. \mbox{AIEnvelope} extends the standard pruning and clustering methods to fully preserve the semantics of the networks. 
+
+
+% In \textbf{Task 2}, we utilize CAP to mitigate the inputs issues (engaged with adversarial attacks), weakly labelled problems (suffered the labelling cost even from the unlabelled data), and noisy labels (corrupted from ground-truth labels); we deploy CRL to 
+% enhance the original model by the augmented data and dissimilar with the distinguished non-robust settings searched from \textbf{Task 1}. 
+
+% As shown in Figure~\ref{fig:goal2}, in \textbf{(1)}, we organize iterative data augmentation strategy to partition the large-scale dataset into multiple rotations, involving experts intervention via active learning, to generate a semi-supervised contrastive learning model to decrease the manually labelling and checking workloads, corresponding to the data issues; in \textbf{(2)}, we introduce a semi-supervised contrastive method to maximize the dissimilarities against the worst cases from the configurations so as to guide the learned configuration representation farther apart from these negative samples, towards the downstream task on image, graph, or text. 
+
+
+
+% Most existing works in learning the representations without the labels are self-supervised-CL ~\cite{chen2020simple,grill2020bootstrap,khosla2020supervised}, of which the typical work SimCLR uses similar pairs without adding other labels but minimizes the differences between the augmented positive pairs, e.g., luminance, rotation, and random cropping, etc. 
+% On the other hand, supervised-CL~\cite{khosla2020supervised} exploits the label information, which mutates the contrastive loss from a similar pair with many different (negative) classes, giving more information for more precise predictions.
+% However, in our circumstances, the dataset, which is demanded tediously labeling efforts by humans, as the interventions from experts are necessary to tackle the noisy and wrong labels, requires semi-supervised learning (SSL) approaches to address all the above issues, which motivates us to look beyond the supervised or self-supervised methods. 
+
+
+% Our aim is to enhance the robustness of a DNN model by maximizing its output consistency given the same input in the presence of top-$Q$ perturbation strategies to the data and configurations. 
+
+%To be specific, the robustness enhancement is to achieve the objectives in Equations~\eqref{eq1} to \eqref{eq4}. 
+%\begin{itemize}
+%    \item From the data perspective, (1) the perturbed inputs should not alter the output and close to the original input in the latent space, e.g., the adversarial perturbation is one particular perturbed input method that misleads to the wrong predictions; 
+%    (2) the perturbed labels (outputs) should be learned to reduce their contribution to the model, e.g., the label noise corrupts the model by different noisy distributions~\cite{nguyen2019self,zhang2019familial}. 
+%    \item From the configuration perspective, model initialization, configuration and its  hyper-parameters are expected to provide robust consistent prediction performance. 
+%\end{itemize}
+
+% In this task, we propose a new multi-surface training approach in our CRL framework, which explores uniformed losses in the presence of the input data noise, label noise, and configuration noise to the model.
+% CRL exploits contrastive-active learning and extends adversary training~\cite{goodfellow2015explaining} jointly helping each other to enhance the robustness of the model. 
+
+
+
+
+% A common structure is $min\ R(f(x))\ s.t.\ x\in \mathcal{X}$, whereas $R$ is a specification function in representing the robustness measures. The term of robustness distinguishes into two aspects: (1) $Robust Model\ (R_m)$ resolves the probability distributions ($i.e.$, the input $x$ has a class $i$ in a classification model~\cite{Kamiran2012}, which can be computed as $\mathop{argmax}\limits_{i\in\{ 1,...,n\}}f(x),\ n\ \ s.t.\ classification\ types$); (2) $Robust Network\ (R_n)$ resolves each non-input layer in which a neural network typically composites layers as $f = argmax \circ f_{n} \circ f_{n-1}\dots f_1$ where $f_i(x)=\phi(w_{i}x+b_{i})$. $\phi$ is activation function of which some choices are $tanh$, $ReLU$, and $sigmoid$, $etc$. $w_i$ and $b_i$ represent the model weights and bias value, respectively.
+
+\begin{comment}
+    Given a network $\mathcal{N}$, an input ${v}$, a norm $\mathtt{p}$, and a distance $d$, the maximum safe radius ($MSR$) is to compute the minimum distance from input ${v} $ to a counterexample $v'$,
+\begin{equation}
+         MSR(\mathcal{N},v,\mathtt{p},d)=\max_{d}\left\{ \left\| v-v' \right\|_\mathbf{p} < d \ |\  Robust({\mathcal{N}, v',\mathtt{p},d}) == \texttt{True},\  \mathcal{N}(v) = \mathcal{N}(v')\right\}
+ \end{equation}
+ \begin{equation}
+     MSR(\mathcal{N},v,\mathtt{p},d)=\min_{v'\in \mathtt{D}}\left\{ \left\| v-v' \right\|_\mathbf{p} < d + \varepsilon\ |\  Robust({\mathcal{N}, v',\mathtt{p},d}) == \texttt{True},\  \mathcal{N}(v) \neq \mathcal{N}(v')\right\}
+ \end{equation}
+
+ \textcolor{red}{amending needed For each $v'$ reasons \texttt{True}, the $MSR$ is $d+\varepsilon$.}
+
+
+The relationship among adversarial example, $Robust(\mathcal{N},x,\mathtt{p},d)$, Maximum Safe Radius is shown in Figure 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[scale=0.65]{fig/msr.pdf}
+    \caption{MSR, Robust and Adversarial example}
+    \label{fig:msr}
+\end{figure}
+
+
+\textcolor{blue}{Due to the difference in optimization methods, there are two types: full-precision (float number) neural networks and quantized neural networks. The existing quantitative verification work also has two categories. For the full-precision side, P{\u{a}}s{\u{a}}reanu \textit{et al.}~\cite{puasuareanu2020probabilistic} uses a sampling and interval-based approach. It includes an approximation approach to increasing scalability. For the quantized side, the NPAQ\cite{baluta2019quantitative} uses a constraint solver within confidence to produce approximate quantitative results.}
+
+\textcolor{blue}{The approximation of float number computations can achieve verification scalability of full-precision networks. However, the approximation can lead to floating-point rounding errors and incorrect verification results. This conclusion has been proved in the paper\cite{jia2021exploiting}. 
+To unify the verification steps, we will propose a method to avoid real approximations of the float numbers. Before the verification, we propose two preparation steps. The first step is to check if the neural network is quantized using fixed-point or integer numbers. If the result is not, the method will round the full-precision values to fixed-point values. Another step is to transfer the fixed-point values to integer values if the networks are not integer networks. Here is an example. We have a fixed-point number 0011.1100(3.75), 8 bits. After the transformation, the integer value will be 00111100(60), an 8 bits integer. In this example, 3.75 increases $2^4$ times. The arithmetical operation loss will be the same, avoiding the rounding error.}
+\end{comment}
+
+
+
+% In Figure~\ref{fig:goal2}, we propose a $mixture-loss$ for CRL that builds similarly to those used in supervised contrastive learning. Regarding the different strategies, the given target data are applied to its fitted contrastive loss: (1) Adversarial loss is addressed in the perturbed inputs scenario that the contrastive pair is the target inputs and their following perturbed inputs which can be viewed as positive pairs; (2) Label-flipping loss is computed on the variations of the noisy labels to reduce the effects of imprecise labels, by which the ground-truth labels and noisy labels can be viewed as negative pairs; (3) Configuration loss is utilized to update our target model to be trained dissimilar to the perturbed model which is proven to be less robust.
+
+% \begin{figure}[!h]
+%     \centering
+%     \includegraphics[width=9cm]{fig/task2.pdf}
+%     \caption{Data augmentation and robust training}
+%     \label{fig:goal2}
+% \end{figure}
+% \textbf{Uniformed-loss}. Given one target training data (anchor input) $x\in\mathbb{X}$, we assume the perturbed samples $\hat{x} \in \hat{\mathbb{X}}$, which applied from $\omega$ strategy as the anchor's positive member ($x^+$). And we use the anchor in the perturbed configuration model ($\hat{\mathcal{M}}$) as the negative pair with the original model. The uniformed loss learns to minimize the distance between the anchor $x$ and the positive $x^+$ and maximize the distance between the anchor $x$ and the negative $x^-$ at the same time with the following equation: 
+
+
+
+
+% the model encodes each input $x_i\in \mathbb{X}$ into the latent space, where the samples in the same class have similar representations while the samples from different class have different ones, as shown in Figure~\ref{fig:goal2}. Contrastive learning takes pairs of inputs $\{(x_i,x_j)| x_i\in \mathbb{X},x_j\in \mathbb{X}\}$ to minimize the embedding distance when they are from the same class, whilst maximizing the distances otherwise.
+
+\begin{table}[t]
+    \centering
+    \caption{Various configurations yield performance variance impacting on many of the CSIRO missions}
+\footnotesize
+%fix the table
+ \begin{threeparttable}
+    \begin{tabular}{lllll}
+        \toprule
+        \multirow{2}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{\textbf{Key technologies}} &\multirow{2}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{\textbf{Mission related use cases}} &  \multirow{2}{*}[-0.5\dimexpr \aboverulesep + \belowrulesep + \cmidrulewidth]{\textbf{Data}} & \multicolumn{2}{c}{\textbf{Configurations}}    \\
+        \cmidrule(lr){4-5} 
+        & & & \textbf{Network Architecture} & \textbf{Learning method} \\
+        \midrule
+        \#1 & Image recognition & MNIST~\cite{MNIST} & LeNet5~\cite{lecun1998gradient} & SGD  \\
+        \#2  & Image classification & CIFAR100~\cite{krizhevsky2009learning} & WRN-28-10\tnote{1}~\cite{zagoruyko2016wide} & SGD \\ 
+        \#3 & Recycling waste classification & RecycleNet~\cite{trashnet} & ResNet+Attention~\cite{RecycleNet_trash_images} & SGD \\ 
+        \#4 & Malware detection & BODMAS~\cite{bodmas} & Feed-forward neural network~\cite{harang2020sorel,bodmas} & Adam \\
+        \#5 & Renewable energy prediction & Deep-forecast~\cite{ghaderi2017deepforecast} & DL-STF\tnote{2}~\cite{ghaderi2017deepforecast} & RMSprop \\
+        \#6 & Medical diagnosis & Physionet 2017 dataset~\cite{clifford2017af} & ResNet~\cite{hannun2019cardiologist} & Adam \\
+        \#7 & Video action recognition & UCF101~\cite{soomro2012ucf101} & VGG16+LSTM~\cite{wu2020robustness} & SGD \\
+        \bottomrule
+        
+    \end{tabular}
+    \begin{tablenotes}
+    \item[1] WRN-28-10 denotes the WideResNet where the network depth is 28 and the widening factor is 10. \\
+    \item[2] DL-based Spatio-Temporal Forecasting (DL-STF) denotes the spatio-temporal recurrent neural network in~\cite{ghaderi2017deepforecast}.
+  \end{tablenotes}
+    \end{threeparttable}
+\label{tab:existing}
+\end{table} 
+
+
+
+
+    % \mathcal{L}_{ct} = \sum_{(x_i,y_i) \in (\mathbb{X},\mathbb{Y})} \mathbb{1}[y_i=y_j]\|f_{\Theta}(x_i)-f_{\Theta}(x_j)\|_{\mathtt{p}} - \mathbb{1}[y_i \neq y_j]\|f_{\Theta}(x_i)-f_{\Theta}(x_j)\|_{\mathtt{p}} + \gamma,
+    
+% by the perturbed strategies. 
+% In Equation~\eqref{eq:contra}, the representation of positive and negative pair processes are aggregated together, as the indicator function $\mathbb{1}[\cdot] \in \{0,1\}$ returns 1 when the condition is fulfilled, whilst 0 otherwise. 
+
+
+% Adversarial loss aims to deal with the perturbed input issue. We assume $(x,\hat{x})$ as a positive pair
+
+
+
+we minimize every original input from its perturbed data distance but maximize the distances between the input 
+
+
+
+The perturbed samples can be assumed as the original samples augmented data so that we make them the positive pair. 
+
+
+
+Then the training input $x$ and the perturbed one $\hat{x}$ make a pair of positive pair in Equation~\eqref{eq:contra}. $\mathcal{L}$ denotes the loss with the configuration of the model. The perturbed samples can be assumed as a different view from the target samples which are augmented by the additional perturbation. Equation~\eqref{eq:adv} towards achieving the guaranteed robustness to the perturbed inputs is to maximize the second inner term as each of the perturbed input with a high loss. And the minimization of Equation~\eqref{eq:adv} is to find the model configuration ($\Theta$) so that the given inner perturbation problem is minimized.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% the pruning rate is expected to be  
+%  Then the objective to find the maximum pruning with robustness-preserving can be present as:
+%  \begin{equation}\label{eq:pruning_target}
+%   \mathop{\mathrm{min}}(\mathrm{C-CDD}(X, \mathcal{M}') - \mathrm{C-CDD}(X, \hat{\mathcal{M}}')+\sum_{i=1}^n{a^i}),
+%  \end{equation}
+%  where $M'=<L, W, b, \Phi>$, $\hat{M}'=<L', W', b, \Phi>$, $L'=\{\hat{l}^i\}^{n}_{i=1}$ and $W'=\{\hat{w}^i\}^{n}_{i=1}$.
+ 
+
+
+ 
+%  As in Fig.~\ref{fig:task3_pruning}, the  binary network has the same network structure with trained model, and training data $\mathcal{D}$ and the configuration $\Theta$ from model $\mathcal{M}'$ are both for the training of the binary network. The binary mask network can be presented as $<L,A,W,b,\Theta>$, where $L,W,b,\Theta$ are same with $\mathcal{M}'$ and fixed during the update of binary network parameters $A$. Here, the objective of the binary network is Equation~\eqref{eq:pruning_target} and the parameters are updated via gradient back-propagation method. 
+
+ 

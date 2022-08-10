@@ -1,0 +1,56 @@
+\thispagestyle{empty}
+ \begin{center}
+{\bf \TITLE}\\
+{
+%Tim Menzies, IEEE Fellow, NC State
+}
+ \end{center}
+\vspace{-3mm}
+\noindent
+%(In this section, all terms shown in {\bf {\em bold font}} are explained later in this proposal.)
+
+This proposal will allow AI and security practitioners and researchers to build a responsible AI foundation by testing, mitigating, and certifying vulnerable Deep Neural Network (DNN) models for critical learning tasks. 
+Our approach called \mbox{AIEnvelope} aims to mitigate and repair robustness issues and quantitatively verify the robustness property of DNNs through data augmentation (by supporting less-but-high-quality adversarial data), robustness-preserving model reduction (by optimizing models to reduce high-cost training) and symbolic verification techniques (by providing quantitative robustness guarantee).
+
+%robustness is a negoiatble design construct
+%offer choices of variance and 
+Deep learning models are widely used in a wide range of industries and businesses. Nowadays, responsible and reliable AI is not an option but a priority in many important areas such as transport, supply chain, defence, finance, space, and communication to ensure business and consumer confidence. 
+These deep learning models in the downstream tasks are so pervasive that we are often unaware of their presence until bugs occur. A single defect or robustness issue can cause fatal errors in safety-critical systems, such as autonomous driving and medical diagnosis.  
+
+However, many current DNN models are found to have robustness issues, can be unsatisfiable to user expectations, or are susceptible to cybersecurity attacks~\cite{shu2020omni}. Prior work has shown that these AI systems are vulnerable and suffer from reliability issues (e.g., incorrect recognition results), fairness concerns (e.g., bias against underrepresented groups) or lacking user privacy protection (e.g., privacy leakage). 
+This proposal will study the robustness (e.g., accuracy variance) of deep neural network models and their impact on downstream learning tasks. 
+We will investigate mitigation techniques for vulnerable DNNs through generating adversarial data and software configurations using active semi-supervised learning. The repaired DNN model will then be optimized via robustness-preserving optimization to reduce training cost and certified via symbolic verification techniques to provide a quantitative robustness guarantee.
+
+\begin{formal}\noindent
+{\bf Goal 1:} Study and understand the robustness issues of deep neural networks.\label{goal1}
+\end{formal}
+\noindent
+Robustness is the most noteworthy, well-defined correctness property for reliable and responsible DNNs, i.e., minor modifications to the (future) inputs of DNNs must not alter its outputs. Assuring robustness is critically important to prevent AI systems from environmental perturbations and adversarial attacks.
+DNNs are imperfect and existing learning models often yield imprecise or incorrect outputs for real-world applications~\cite{pham2020problems,xiao2021nondeterministic}. 
+For example, multiple identical training procedures can generate different models with different accuracy variances in the presence of various factors including imperfect data~\cite{zhang2019familial,menzies2012promise,shu2020omni} (e.g., limited, weakly-labelled and concept-drifting training samples) and variance caused by software implementation and configurations  (e.g., nondeterministic DL layers, and random weight initialization and floating-point imprecision). 
+We aim to understand and assess a range of factors that affect the robustness of DNNs and provide guidelines for later mitigation and repair: 
+
+\begin{formal}\noindent
+{\bf Goal 2:} Harnessing imperfect data and configuration to improve robustness.
+\end{formal}
+\noindent
+The objective is to investigate robust adversarial training with data and software configuration augmentation techniques through semi-supervised contrastive-active learning. 
+Obtaining high-quality training data is the first step to build a robust deep learning model. Based on different robustness impacting factors studied in \textbf{Goal 1}, we will harvest the imperfect training data using a new contrastive-active learning approach to iteratively select unlabelled program samples with distinctive features. This enables automatic or fast semi-automatic labelling, hence significantly reducing
+manual labelling costs and improving data quality and quantity. This goal enhances the accuracy and robustness of the underlying model, however, the overhead incurred to the iterative adversarial training can be high if the network structure is large. Improving training efficiency for large-scale real-world data is crucial to obtain a more robust model under the same training time constraint. This leads to our next goal to improve training efficiency:
+
+\noindent
+\begin{formal}
+{\bf Goal 3:} Model reduction and optimization to  improve training efficiency.
+\end{formal}
+\noindent
+Deep learning models often suffer from redundancy in their network structure, which affects their training efficiency. For example, the over-fitting issue in DNNs~\cite{denil2013predicting} has shown that a large proportion of the configuration parameters are not contributed to the model robustness. 
+In this goal, we aim to perform model reduction and optimization to improve training efficiency. Specifically, our novelty lies in robustness-preserved structure transformation to perform network pruning~\cite{han2015learning,luo2017thinet}, quantize~\cite{ullrich2017soft} and parallelization~\cite{narayanan2019pipedream} through hyperparameter tuning, quantization, parallelism.
+The model is reduced and optimized where necessary but preserving the same robustness to boost the adversarial training in \textbf{Goal 2}. Though model reduction (\textbf{Goal 3}) and robustness repair (\textbf{Goal 2}) complement each other, they can be conducted iteratively with one's output as the other's input to continuously improve the overall robustness.
+With all that done, we will conduct the final verification to qualitatively certify the underlying DNN model: 
+  \noindent
+\begin{formal}
+{\bf Goal 4:} Quantitative robustness verification of DNN models. 
+\end{formal}
+\noindent  
+Given a repaired and reduced DNN model from \textbf{Goal 2} and \textbf{Goal 3}, our final aim is to conduct precise verification of DNNs using symbolic quantitative certification for the robustness property of the model. 
+In the verification of neural networks, a simple yes/no to a verification result about the robustness cannot demonstrate the confidence of the model (e.g., how many perturbed inputs change the model and how much of the deviation of the model has changed). To quantitatively measure and compare the performances of the models by giving in numerous domains would extend the measurement, compared with a threshold deemed with a certain region in a confidence interval. 

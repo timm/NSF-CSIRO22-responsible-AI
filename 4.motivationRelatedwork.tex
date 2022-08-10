@@ -1,0 +1,81 @@
+\section{Motivation and Related Work}\label{back}
+
+\subsection{Motivation}
+
+DNNs can be seen as 'programs' composed of training the model parameters (e.g., weights in the networks) from the data. Unlike the hand-written programs by software developers, neural networks lack well-specified requirements and are almost inexplicable, making it challenging to test, analyze and verify their properties (e.g., robustness).
+
+Although DNNs have attained success in real-world complicated tasks such as self-driving systems, malware detection and medical diagnosis, previous research has revealed that a DNN model with high accuracy cannot be guaranteed high  robustness~\cite{ICSE2020W_B_Fairness_Test_Adversarial_Sampling,juuti2019prada,shi2020adaptive,tsipras2018robustness}. This raises reliability and security concerns when applying 
+exiting DNN models, especially for mission- and safety-critical scenarios. For example, AdvHat~\cite{AdvHat} uses a simple sticker to fool the face recognition system. Autopilot embedded the DNN models on Tesla vehicles has been involved in around over 200 crashes reported in  2021~\cite{wang2019security}. The vulnerability of DNNs to adversarial attacks has been claimed fatal error in the classification of skin cancer, pneumonia and other diagnoses, a \$250 billion medical industry~\cite{finlayson2019adversarial}. 
+There is an increasing demand for responsible AI solutions (e.g., US National AI research and development strategic plan and missions proposed by Australia's CSIRO) because more robust AI models can enhance business and consumer confidence and their productivity by tackling the challenges in a wide variety of domains such as food quality, environmental protection, low carbon industry and etc. For example, responsible AI models can be used to support trusted food supply chain by correctly monitoring and recognizing the quality of food, and more precise recognition for rubbish classification, and even better scheduling of usages of renewable energy~\cite{csiromission}.
+%Google searches of the first name of black people are 25\% more than the criminal records search of those of white-identified names~\cite{crawford2016there}. 
+
+
+Fig.~\ref{fig:motivation} demonstrates a few factors including data and configuration factors that affect the performance of DNNs based on our empirical study.
+We briefly describe the following four representative DNNs projects, which yield large performance (accuracy on classification  and regression tasks) variances under four different impacting factors.
+
+\bi
+\item {\textbf{(a) Weakly-labelled data}} which contains incomplete or partially labelled training samples can adversely affect the accuracy of the trained DNN models. 
+Fig.~\ref{fig:motivation}(a) shows the impacts of weak-labelled data using the widely-recognized RecycleNet~\cite{bircanouglu2018recyclenet} with the TrashNet dataset~\cite {DataTrashNet}, in which the images between plastic bottles and glass bottles are sometimes incorrectly labeled. This  affects the accuracy prediction for the waste classification, which can decrease the classification accuracy by 2.75\% due to weakly label samples in the training set.
+%Here, 5\% of samples belonging to plastic and glass are exchanged to simulate the mislabelling process. The simulation results show that the accuracy decreases by 2.75\% due to weak labels.
+
+\item {\textbf{(b) Covariate shift}} which is a distribution  shift among different segments of time periods. This data shifting issue challenges the robustness of the deep learning models like deep Recurrent Neural Network (RNN). 
+Fig.~\ref{fig:motivation}(b) shows the large variance of Root Mean Square Error (RMSE) when using two RNN models~\cite{KaggleTraffic} trained with two different temporal data (i.e., 2016.11.1-2017.2.29 and 2017.3.1-2017.6.30) to mitigate the traffic (supply chain) congestion problem. 
+%Fig.~\ref{fig:motivation}(b) shows Root Mean Square Error (RMSE) , which are 0.7838 and 1.0190 referred from the recent data (2016.11.1-2017.2.29) and future data (2017.3.1-2017.6.30), which reveals that the unstable prediction performance of the RNN model.
+%with the same model configurations
+
+\item {\textbf{(c) Randomness in configurations}} which introduces nondeterminism during the training of DNNs when the stochastic algorithms are used.
+%e.g., simulated annealing and stochastic gradient descent. 
+Fig.~\ref{fig:motivation}(c) shows the accuracy difference between two training jobs for the DNN-based recognition of  electrocardiograms (ECGs) in cardiac arrhythmia diagnosis~\cite{hannun2019cardiologistlevel,wang2020deep}.  
+This critical diagnosis utilizes ResNet~\cite{hannun2019cardiologistlevel} as the default training dataset. We conducted 30 training jobs with random seeds (other settings are the same). The variance of the resulting models can be over 10\%.
+
+\item {\textbf{(d) Model initialization}} which can cause DNN instabilities varied in different initialization methods. We performed the experiments with the same dataset and implementation, except for the weight initialization in the wind speed forecasting project~\cite{ghaderi2017deep}. 
+Fig.~\ref{fig:motivation}(d) depicts the RMSEs of the experiments with Kaiming \cite{he2015delving} and Xavier initialization \cite{glorot2010understanding} methods. It can yield a difference of 0.6535 in RMSE.
+
+\ei
+
+\subsection{Related Work}
+
+{\textbf{DNN robustness issues.}}
+Existing studies mostly focus on data factors affecting the robustness of DNNs. Tripuraneni \textit{et al.} \cite{tripuraneni2021overparameterization} study the high-dimensional asymptotics of random regression under covariate shift; Zhang \textit{et al.} \cite{zhang2020familial} investigate the negative effects of weakly-labelled samples for clustering and proposed a new hybrid representation strategy for familial clustering; Tu \textit{et al.} \cite{tu2020better} found that automatic keyword labelling suffers weakly-labelled issue in bug-fixing commits and recommended to label commits through human+artificial expertise; Shu \textit{et al.} \cite{shu2022omni} argue that well-crafted adversarial samples heavily decrease the identification performance of DNN models and proposed a new Omni solution with multi-model ensemble. 
+Some recent studies also explore other factors affecting robustness. For example, Xiao \textit{et al.} \cite{xiao2021nondeterministic} study the impacts of CPU multithreading on DNN systems; 
+Pham \textit{et al.} \cite{pham2020problems} explored the performance of identical models with random seeds and nondeterminism-introducing factors under different training runs. These recent approaches provide some insights to understand the impacting factors on DNN robustness. 
+In this proposal, we aim to systematically study a wider range of impacts of the data and software implementation and configurations, which will guide our later tasks in on-demand mitigating and repairing robustness issues of the state-of-the-art (SOTA) DNNs. 
+
+{\textbf{Data augmentation and adversarial training.}}
+Existing robustness enhancement typically can be done through two main directions: data augmentation and adversarial training.
+Data augmentation is usually hinged due to the expensive collection and labelling. To solve this problem, self-supervised or semi-supervised learning methods have been developed to learn feature representations without labelling. 
+Among them, the contrastive learning approach SimCLR~\cite{chen2020simple} aims to identify low-dimensional patterns through contrastive learning on two datasets with the same original data and different augmentation methods. 
+Unlike SimCLR, MOCO~\cite{he2020momentum} and PIRL~\cite{doersch2015unsupervised} learn the occlusion representations extended from original data to improve precision. 
+However, contrastive data augmentation cannot capture the viewpoints of humans and distinguish invariances from the data which are crucial to adversarial training. DebtFree~\cite{tu2022debtfree} applies active learning to discriminate a small amount of representative data by human experts. 
+%Familial Clustering~\cite{zhang2019familial} initially takes outlier-aware clustering data and supervised learning methods to automatically classify the unlabelled data.  
+Among the existing adversarial training (AT) strategies, GoodFellow \textit{et al}~\cite{goodfellow2015explaining} enhance the generalization of the model through adversarial learning with their proposed simple but efficient method to generate adversarial samples. 
+Huang \textit{et al}~\cite{huang2015learning} minimize the classification error against the adversarial samples. 
+Zhang \textit{et al.} \cite{zhang2022robustness} propose a CARROT framework to generate adversarial samples through hill climbing. However, these existing methods are still inefficient and/or ineffective in large-scale adversarial training, particularly in the presence of imperfect data and software configurations, which are rarely studied so far. 
+In this proposal, we will investigate new active-contrastive-based adversarial training techniques to cope with imperfect data and software configurations in order to mitigate the robustness issues of large-scale DNNs.
+
+{\textbf{Training acceleration.}}
+Large neural networks are always resource-intensive and time-consuming in the training stage. Further, these networks cannot be deployed in the inference stage under resource constraint circumstances. Recently, several techniques have been proposed to boost the training efficiency including data quantization and network pruning. 
+Data quantization~\cite{wang2020apq} has been deployed to coarsely chop the numerical real numbers to a quantized fixed-bits representation. 
+Once For All (OFA)~\cite{cai2020once} supports diverse deployment on various edge devices without an extra training process. 
+Joint Search for Network Architecture, Pruning and Quantization Policy (APQ)~\cite{wang2020apq} trains an optimization model by jointly using network architecture pruning and quantization. APQ obtains SOTA efficiency according to the comparisons with the top-ranking methods.
+%FlexFlow \cite{Jia2019ParaforDNN} aims to find a fast parallelization optimization strategy to accelerate the training process through the guided random search on the Sample-Operation-Attribute-Parameter (SOAP) space. 
+% ByteScheduler \cite{Peng2019DNNaccelerate} accelerates the DNN training process through partitioning and rearranging the tensor transmissions. 
+Most of these existing efficiency-driven optimisation (e.g., quantization and pruning) affect the robustness of DNNs. 
+In this proposal, we aim to develop a new robustness-preserving model reduction technique to significantly boost the training efficiency while maintaining the model's robustness.
+
+{\textbf{Robustness Certification.}} Robustness~\cite{carlini2017towards} is arguably the most important property to evaluate the reliablity and security of DNNs  ~\cite{NIPS2018shiqi}.
+Robustness verification aims to check if any small adversarial  changes to the input can change the output of a DNN. 
+In the literature, robustness boundary verification approaches based on formal methods include the exact methods and the approximate methods. 
+For the exact method, Reluplex\cite{katz2017reluplex} represents an example of the SMT methods. Tjeng \textit{et al.}~\cite{tjeng2017evaluating} propose a mixed integer programming (MILP) method. These two methods are traditional verification approaches. P{\u{a}}s{\u{a}}reanu \textit{et al.}~\cite{puasuareanu2020probabilistic} propose a method of concolic verification by combining  concrete testing and symbolic execution.
+For the approximate method, AI2 \cite{AI2} uses abstract interpretation to certify neural networks. ReluVal\cite{ReluVal} is an interval boundary propagation method, and convex relaxation is a direction such as GeoCert\cite{NEURIPS2019_GeoCert}. 
+Exact methods can verify the neural networks precisely but can only verify small-sized DNNs. Approximate methods can approximate the model’s robustness bounds in order to scale the verification for large-size DNNs by sacrificing the verification precision. 
+This proposal aims to balance the the exact and approximate methods by proposing a quantitative robustness verification approach based on symbolic execution and constraint solving of DNNs to report not only whether the robustness properties are satisfied, but also indicate where and how many inputs violate them.
+
+
+
+
+
+
+
+
+

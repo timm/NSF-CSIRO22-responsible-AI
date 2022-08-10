@@ -1,0 +1,40 @@
+\section{Research Plan}\label{plan}
+Given the aforementioned overall framework, this section details the plan we would like to conduct for each proposed task.
+Before we describe each part of our research task (\textbf{Tasks 1-4}), we first formalize the definition of the robustness of DNNs and generalize the four types of problems for robustness measurement, testing and verification. 
+
+{\textbf{DNN robustness formalization.}} A DNN model can be represented as a function $f_{\theta}:\mathbb{X}\rightarrow\mathbb{Y}$, which accepts an input $x\in \mathbb{X} \subseteq \mathbb{R}^n$, and returns an output $y\in \mathbb{Y} \subseteq \mathbb{R}^m$, where $\theta\in\Theta$ denotes the model parameter/architecture configuration, and $\mathbb{X}$ and $\mathbb{Y}$ are the inputs and outputs in the real number domain with $n$ and $m$ dimensions, respectively. A robust DNN is expected to be resilient to a small perturbation on data $(x,y)$ and configuration $\theta$, that is the model (1)  always yields the same output given the same input; (2) is able to identify irrelevant inputs; (3) produces accurate results in the presence of noisy labels, and (4) is stable for accuracy given perturbed model configurations. 
+The following formally defines these four aspects for the DNN robustness w.r.t data and configuration.
+
+\bi
+\item{\textbf{Data}:} For supervised learning, a DNN model predicts the label of a sample through the trained model which captures the pattern between training data and their pre-defined labels. A trained DNN model $f_{\theta}$ is treated as robust if any input-output relation ($x,y$) always holds under perturbed inputs and outputs.
+% input perturbation, irrelevant inputs and noisy labels.
+
+\begin{itemize}[leftmargin=.2in] 
+
+    \item \textbf{Perturbed inputs}: During the training period, perturbed inputs are commonly imposed and can mislead the learning process. In response to the perturbations, a robust DNN can be formalized as:
+    \begin{equation}\label{eq1}
+    \forall x\in \mathbb{X}, \hat{x}\in \mathbb{X}, \|x-\hat{x}\|_\mathtt{p} < \sigma \Rightarrow {f_{\theta}(\hat{x})}=y\in \mathbb{Y},
+    \end{equation}
+
+where $\hat{x}$ denotes the perturbed inputs under $\mathtt{p}$ normalization with $\sigma$ distance (the degree of perturbations) to the original input $x$. $\hat{y}$ denotes the corresponding predicted output. 
+%To tolerate input perturbations, a robust DNN typically has large decision boundaries. 
+
+    % \item \textbf{Irrelevant inputs}: During the prediction/inference period, there is a common situation of seeking for the classification on a new sample $\hat{x}$ out of the training distribution. In response to this condition, a robust model should give a reliable decision that the predicted result $\hat{y}$ is not classified into any category in $\mathbb{Y}$:
+    % \begin{equation}\label{eq2} 
+    % \forall \hat{x}\notin \mathbb{X}, \hat{y} = f(\hat{x}) \Rightarrow  \hat{y} \notin \mathbb{Y}.
+    % \end{equation}
+
+    \item \textbf{Perturbed outputs}: If the training dataset contains corrupted or imprecise labels ($\hat{y}$) under $\delta$ distance to the human-desired labels ($y$) and deviated by $\tau$ times to the inference result, a robust model $f_{\theta}$ can still output the correct $y$:
+%clustering center
+    \begin{equation} \label{eq3} 
+    \forall (x, \hat{y})\in( \mathbb{X}, \mathbb{Y}), \hat{y} = \tau \cdot f_{\theta}(x), \  \|f_{\theta}(x)-\hat{y}\|_\mathtt{p} < \delta  \Rightarrow f_{\theta}(x) = y\in \mathbb{Y}.
+    \end{equation}
+\end{itemize}
+
+\item{\textbf{Configurations}:} In addition to data factors, the training variance from configurations (e.g., model initialization and hyperparameters) is another reason for the robustness issues of DNNs. A trained DNN is said to be robust if prediction variance is less susceptible to configuration perturbations:
+    \begin{equation}\label{eq4}  
+   \forall  x\in \mathbb{X}, \theta \in \Theta, \hat{\theta} \in \Theta, \|\theta-\hat{\theta}\|_\mathtt{p} < \eta \Rightarrow f_{\theta}(x)=f_{\hat{\theta}}(x)=y\in \mathbb{Y},
+    \end{equation}
+where $\hat{\theta}$ denotes the configuration under $\mathtt{p}$ normalization with $\eta$ distance (configuration differences) to the configuration $\theta$.
+
+

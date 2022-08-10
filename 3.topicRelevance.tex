@@ -1,0 +1,39 @@
+
+\section{
+Relevance to Responsible AI (material required by solicitation)} 
+\subsection{Clear and concise description of the threat model(s)}
+\bi
+\item
+This work assumes that an {\em adversary's goal} is to impact target model’s prediction performance by causing its misclassification in the testing phase, thus 
+allowing a malicious payload not being detected.
+\item
+Also, as to the {\em adversary's knowledge},
+we assume a whitebox agent that has access to      knowledge of the defender model as well
+as the examples used to train the defender. 
+\item
+As to the 
+{\em adversary’s capability},  we assume adversarial attacks are carried out at the inference time (i.e., testing time), which means the attackers are only able to perturb the immediate inputs, while not be able to manipulate the training dataset. 
+\ei
+\subsection{Discuss the generalizable theories and research methods that will be developed.} {\bf GOAL5} is
+a very general point that speaks to core nature of machine learning.
+
+As to generality of what OMNI-2 can recommend for different data sets, this work will be tested
+on a wide range of data sets (including Table~\ref{tbl:securityDataset}, and  other data we   find 
+during the course of this research).
+
+
+Another generalizable result is what this says about  
+ ensembles, and their value for  defending against attackers. Ensemble defences has is proponents~\cite{kariyappa2019improving,biggio2010multiple,DBLP:conf/iclr/TramerKPGBM18,smutz2016tree,kantchelian2016evasion} and it detractors~\cite{zhang2020decision,zhang2018gradient,he2017adversarial,DBLP:conf/iclr/TramerKPGBM18,DBLP:journals/corr/PapernotMG16}. 
+ We argue here before we can use ensembles to defend against attackers, we need to change the way we build and use ensembles.  
+Instead of averaging out multiple conclusions, OMNI  uses conclusions
+from a large number of learners {\em all of which are  very
+different from each other}\footnote{For an operational definition of ``very different'', see page \pageref{definititions}
+of this proposal.}.
+That is to say, 
+ OMNI's conclusions come from exploring the 
+ {\em far corners of a very large ensemble}, rather than just the center
+of a   small ensemble. 
+
+\subsection{Discuss the trade-offs and risks involved in the research plan}
+See our research plan, below, in
+\S\ref{r1}, \S\ref{r2}, \S\ref{r3}, \S\ref{r4} and \S\ref{r5}.

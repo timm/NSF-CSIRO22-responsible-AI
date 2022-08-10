@@ -1,0 +1,96 @@
+
+
+
+\begin{nsfsummary} 
+\begin{center}
+{\bf \TITLE}\\\vspace{1mm}
+% Tim Menzies,  IEEE Fellow, NC State
+ \end{center}
+  
+\noindent
+
+\noindent{\bf  OVERVIEW}
+
+We propose a new tool, called \mbox{OMNI-2} that explores a core issue in adversarial attacks
+(do different learners return the same decision boundary?)
+while also allowing security practitioners and researchers to build more robust models against  white-box   adversarial evasion attacks.
+
+ Many  malware and intrusion detection systems use machine learning-based   detection models. Prior work has shown that such models are susceptible to adversarial evasion attacks where inputs are    crafted by intelligent malicious adversaries  in order make the defender
+(e.g. a neural net) misclassify malicious inputs as ``benign''. 
+To recognize an adversarial attack,
+ a defender must configure a  
+learner.  
+Using   {\bf {\em multi-objective geometry tricks}}, OMNI-2 can  explore the configuration of a large number of possible    defenders, then cache
+100s of {\bf {\em nearly-optimal}}, but {\bf {\em unexpectedly different}}
+ones.
+By jumping randomly between all those configurations, it is possible to   prevent an adversary from finding,
+then exploiting,
+patterns in the defenses.
+ 
+
+\noindent{\bf  INTELLECTUAL  MERIT}
+
+The  success of   OMNI-1   suggests that  prior work made a premature and 
+ incorrect conclusion about the value of diversity-based defences (against adversarial learning).  
+  Prior work   concluded
+    that    different  defending
+  learners generate the  same decision boundary
+  (the region separating malicious from benign inputs). This is highly
+  undesirable since it  mean
+   attackers can also learn that structure, {\em even if the attacker does not know
+  the learner being used by the defender}.  Yet if this were always so, then OMNI-1 
+  would not have worked.  The possibility, to be explored here with OMNI-1, is that  if we jump around a very large range of defense options, we can effectively defend against a wide range of adversarial attacks. 
+% This work revisits the value of
+% using   ensembles for defending against attackers. The use of such ensembles
+%  has its
+% defenders and it detractors.
+% Here, 
+%  we argue here before we can use ensembles to defend against attackers, 
+%  it is vital to  change the way we build and use ensembles.  Our ensembles based their  conclusions come from exploring the 
+%  {\em far corners of a very large ensemble}, rather than just the center
+% of a   small ensemble. 
+ 
+
+
+
+\noindent{\bf BROADER IMPACTS}
+ 
+ 
+ This work will increase America’s ability for industrial and academic innovators to secure their own
+ work.  
+This in an important area of research since there  is an increasing reliance of
+computational methods in all aspects of our society. 
+But the more the international community connects (via software), the more that community
+is susceptible to attacks. 
+With the growing reliance on information technology, cybercrime is a serious threat to the economy, military and other industrial sectors.
+In 2019, the damage cost caused by malware and cybercrime exceeded a trillion dollars. A 2020 study by Accenture reports that cybercrime will cost US \$5.2 trillion over the next five years. Alarming, that cost is growing: the annual average cost to organization of malicious software has grown 29\% in the last year. 
+
+
+
+ 
+ 
+ In terms of other broader impact,
+ this work will inform the curriculum  and lecture notes of the various NC State NSF-funded REUs (research experience for undergraduates) as well as graduate
+SE classes (taught by PI Menzies). 
+PI  Menzies  will  continue  his  established  tradition  of  graduating  research  students  from  historically under-represented  groups.   
+Funds from this work will be used to support students attending the Grace Hopper conference,
+and the Richard Tapia Celebration  of Diversity in Computing.
+
+Further,  a (small) portion of this grant would be allocated to support Broadening Participation in Computing (BPC) work. NC  State’s  Computer  Science  department  has  a  strong  record  of  studying research issues related to gender bias,  barriers faced by women, and methods for broadening participation    in  the  context  of  software  engineering.   PI  Menzies  is  a  member  of  his  department’s Broadening Participation Committee (BPC) that actively seeks to:  (a)~Understand hat factors make computer science more (or less) attractive to underrepresented groups; (b)~Educate faculty, staff, and students on how different behaviors effect diversity, quality and inclusiveness; (c)~Increase the percent of students who identify as women; and (d)~Evaluate the success of his department’s BPC team in broadening participating
+
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+\noindent{\bf KEYWORDS}
+
+Data Science, ML and AI,
+Intrusion Detection,
+Software
+
+\end{nsfsummary}
