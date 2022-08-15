@@ -1331,3 +1331,23 @@ Then the training input $x$ and the perturbed one $\hat{x}$ make a pair of posit
 %  As in Fig.~\ref{fig:task3_pruning}, the  binary network has the same network structure with trained model, and training data $\mathcal{D}$ and the configuration $\Theta$ from model $\mathcal{M}'$ are both for the training of the binary network. The binary mask network can be presented as $<L,A,W,b,\Theta>$, where $L,W,b,\Theta$ are same with $\mathcal{M}'$ and fixed during the update of binary network parameters $A$. Here, the objective of the binary network is Equation~\eqref{eq:pruning_target} and the parameters are updated via gradient back-propagation method. 
 
  
+% For a specific example $<x,y>=<(0.2,0.5),(0.5,0.3,0.2)>$ where $m_0=2$ and $m_k=3$, the robustness of a model to perturbed input $x_1$ with $\sigma=0.1$ distance is defined to satisfy:
+% \begin{equation}\label{eq:example}
+%     0.1 \le x_1 \wedge x_1 \le 0.3 \wedge x_2=0.5 \wedge y_1>y_2 \wedge y_1>y_3.
+% \end{equation}
+
+% \begin{equation*}\label{eq:example_constraints}
+% \begin{array}{rcl}
+%     C_{com} & \rightarrow & C_{in} \wedge C_{out},   \\
+%     C_{in}&  \rightarrow & 0.1 \le x_1 \wedge x_1 \le 0.3 \wedge x_2=0.5, \\
+%     C_{out} & \rightarrow & y_1>y_2 \wedge y_1>y_3.
+% \end{array}
+% \end{equation*}
+
+% \begin{equation}\label{eq:constraints}
+% \begin{array}{rcl}
+%     C_{com} & \rightarrow & 0.1 \le x_1 \wedge x_1 \le 0.3 \wedge x_2=0.5 \wedge y_1>y_2 \wedge y_1>y_3,   \\
+%     C_{single}&  \rightarrow &0.1 \le x_1\ |\ x_1 \le 0.3\ |\ x_2 = 0.5\ |\ y_1 > y_2\ |\ y_1 > y_3, \\
+%      E & \rightarrow & x_1\ |\ x_2\ |\ y_1 |\ y_2 |\ y_3 |\ 0.2\ |\ 0.5\ |\ 0.3\ |\ 0.1.
+% \end{array}
+% \end{equation}

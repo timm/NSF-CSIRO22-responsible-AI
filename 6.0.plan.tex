@@ -13,10 +13,10 @@ The following formally defines these four aspects for the DNN robustness w.r.t d
 
     \item \textbf{Perturbed inputs}: During the training period, perturbed inputs are commonly imposed and can mislead the learning process. In response to the perturbations, a robust DNN can be formalized as:
     \begin{equation}\label{eq1}
-    \forall x\in \mathbb{X}, \hat{x}\in \mathbb{X}, \|x-\hat{x}\|_\mathtt{p} < \sigma \Rightarrow {f_{\theta}(\hat{x})}=y\in \mathbb{Y},
+    \forall x\in \mathbb{X}, \hat{x}\in \mathbb{X}, \|x-\hat{x}\|_\mathtt{p} < \epsilon \Rightarrow {f_{\theta}(\hat{x})}=y\in \mathbb{Y},
     \end{equation}
 
-where $\hat{x}$ denotes the perturbed inputs under $\mathtt{p}$ normalization with $\sigma$ distance (the degree of perturbations) to the original input $x$. $\hat{y}$ denotes the corresponding predicted output. 
+where $\hat{x}$ denotes the perturbed inputs under $\mathtt{p}$ normalization with $\epsilon$ distance (the degree of perturbations) to the original input $x$. $\hat{y}$ denotes the corresponding predicted output. 
 %To tolerate input perturbations, a robust DNN typically has large decision boundaries. 
 
     % \item \textbf{Irrelevant inputs}: During the prediction/inference period, there is a common situation of seeking for the classification on a new sample $\hat{x}$ out of the training distribution. In response to this condition, a robust model should give a reliable decision that the predicted result $\hat{y}$ is not classified into any category in $\mathbb{Y}$:
